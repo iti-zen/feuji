@@ -274,18 +274,15 @@ Active tab `::after` pseudo-element animates width 0→100% over the tab duratio
 **≤ 4 capability cards → Static stagger grid (`.cap-static`). No animation. No duplicates.**
 **5+ capability cards → Auto-scroll carousel (`.cap-carousel`). Duplicated card set for seamless loop.**
 
-#### Static Stagger Grid (≤4 items)
+#### Static Row with Up/Down Stagger (≤4 items)
 - White background, class `.cap-static`
 - Header centered, class `.cap-static__header`
-- Grid: `.cap-static__grid` — `repeat(3, 1fr)` for 3 cards; add `.cap-static__grid--4` modifier for 4 cards
-- Each card wrapped in `.cap-static__cell` — padding-top cascade:
-  - Cell 1: `padding-top: 0`
-  - Cell 2: `padding-top: 80px`
-  - Cell 3: `padding-top: 160px`
-  - Cell 4: `padding-top: 80px` (balances even grid)
-- Cards fill cell width: `width: 100%`
-- Mobile: single column, all padding-top reset to 0
-- Add `.reveal` + staggered delay classes (`.reveal-d1`, `.reveal-d2`) to cells
+- Row container: `.cap-static__row` — `display: flex`, `justify-content: center`, `gap: 20px`, `align-items: flex-start`
+- Cards are direct children (same 300px width as carousel cards)
+- Odd cards: `margin-top: 0`. Even cards: `margin-top: 48px` — identical rhythm to GCC carousel
+- No auto-scroll, no duplicates — just the static row with hover interactions
+- Mobile: single column, all margin-top reset to 0, cards stretch full width
+- Wrap the entire row in `.reveal` for scroll-in fade
 
 #### Auto-Scroll Carousel (5+ items)
 - White background, class `.cap-carousel`, `overflow: hidden`
