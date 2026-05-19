@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quality Engineering as a Service — Feuji</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --f-display: 'Cormorant Garamond', Georgia, serif;
+      --f-ui:      'DM Sans', system-ui, sans-serif;
+
+      /* neutral palette */
+      --neutral-50:  #F9F9F9;
+      --neutral-100: #EAEAEA;
+      --neutral-200: #DFDFDF;
+      --neutral-300: #C1C1C1;
+      --neutral-400: #A2A2A2;
+      --neutral-500: #848484;
+      --neutral-700: #474747;
+      --neutral-800: #292929;
+      --ink:       #0A0A0A;
+      --ink-90:    #1A1A1A;
+      --ink-70:    #333333;
+      --mid:       #656565;
+      --muted:     #848484;
+      --border:    var(--neutral-200);
+      --border-dk: var(--neutral-800);
+      --surface:   var(--neutral-50);
+      --white:     #FFFFFF;
+
+      /* layout */
+      --nav-h:     80px;
+      --max-w:     1280px;
+      --pad-x:     80px;
+      --sec-py:    80px;
+      --gap:       32px;
+
+      /* easing */
+      --ease:     cubic-bezier(0.25,0.1,0.25,1);
+      --ease-out: cubic-bezier(0,0,0.2,1);
+    }
+
+    /* brand accents */
+    :root {
+      --orange:       #F3752C;
+      --orange-light: #FEF3EC;
+      --orange-dark:  #DA6A29;
+      --green-100:    #A4EBDB;
+      --green-200:    #5DDCC2;
+      --green-300:    #00CEA9;
+      --green-400:    #00BE91;
+      --green-500:    #00B784;
+      --green-600:    #00A577;
+      --green-700:    #00805D;
+      --green-800:    #005C43;
+      --green-900:    #003727;
+      --yellow-50:    #FFFBEA;
+      --yellow-100:   #FEF3B0;
+      --yellow-200:   #FDE47A;
+      --yellow-700:   #92650A;
+      --yellow-800:   #6B4A08;
+    }
+
+    /* ─────────────────────────────────────────
+       RESET
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: var(--f-ui);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a   { text-decoration: none; color: inherit; }
+    ul  { list-style: none; }
+    img, svg, video { display: block; max-width: 100%; }
+    button { cursor: pointer; background: none; border: none; font-family: inherit; }
+
+    /* ─────────────────────────────────────────
+       TYPOGRAPHY
+    ───────────────────────────────────────── */
+    .t-label-s {
+      font-family: var(--f-ui);
+      font-size: 12px; font-weight: 600;
+      line-height: 13px; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .t-label-m {
+      font-family: var(--f-ui);
+      font-size: 14px; font-weight: 600;
+      line-height: 15px; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .t-display-m {
+      font-family: var(--f-display);
+      font-size: 72px; font-weight: 500;
+      line-height: 72px; letter-spacing: -3px;
+    }
+    .t-h2 {
+      font-family: var(--f-display);
+      font-size: 64px; font-weight: 500;
+      line-height: 64px; letter-spacing: -3px;
+    }
+    .t-h3 {
+      font-family: var(--f-display);
+      font-size: 40px; font-weight: 500;
+      line-height: 40px; letter-spacing: -2px;
+    }
+    .t-h4 {
+      font-family: var(--f-ui);
+      font-size: 32px; font-weight: 500;
+      line-height: 35px; letter-spacing: -1px;
+    }
+    .t-h5 {
+      font-family: var(--f-ui);
+      font-size: 24px; font-weight: 500;
+      line-height: 29px; letter-spacing: -1px;
+    }
+    .t-body-xl {
+      font-family: var(--f-ui);
+      font-size: 20px; font-weight: 400;
+      line-height: 28px; letter-spacing: -1px;
+    }
+    .t-body-l {
+      font-family: var(--f-ui);
+      font-size: 18px; font-weight: 400;
+      line-height: 25px; letter-spacing: -1px;
+    }
+    .t-body-m {
+      font-family: var(--f-ui);
+      font-size: 16px; font-weight: 400;
+      line-height: 24px; letter-spacing: 0;
+    }
+    .t-body-s {
+      font-family: var(--f-ui);
+      font-size: 14px; font-weight: 400;
+      line-height: 21px; letter-spacing: 0;
+    }
+    .t-btn {
+      font-family: var(--f-ui);
+      font-size: 16px; font-weight: 400;
+      line-height: 18px; letter-spacing: 0;
+    }
+    .t-nav {
+      font-family: var(--f-ui);
+      font-size: 18px; font-weight: 400;
+      line-height: 20px; letter-spacing: -1px;
+    }
+    .t-legal {
+      font-family: var(--f-ui);
+      font-size: 14px; font-weight: 400;
+      line-height: 20px; letter-spacing: 0;
+    }
+
+    /* ─────────────────────────────────────────
+       LAYOUT HELPERS
+    ───────────────────────────────────────── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .eyebrow { display: block; color: var(--muted); margin-bottom: 20px; }
+    .eyebrow--inv { color: var(--neutral-400); }
+
+    /* ─────────────────────────────────────────
+       REVEAL ANIMATION
+    ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+    .reveal.is-visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+
+    /* ─────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 28px; border: 1px solid transparent;
+      border-radius: 999px; cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease),
+                  border-color 0.2s var(--ease), transform 0.18s var(--ease);
+      font-family: var(--f-ui); font-size: 16px; font-weight: 400;
+      line-height: 18px; letter-spacing: 0;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-arrow {
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: transform 0.2s var(--ease); flex-shrink: 0;
+    }
+    .btn:hover .btn-arrow { transform: translateX(4px); }
+
+    .btn--primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .btn--primary:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    .btn--primary-inv { background: var(--white); color: var(--ink); border-color: var(--white); }
+    .btn--primary-inv:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    .btn--primary-orange {
+      background: var(--orange); color: var(--white); border-color: var(--orange);
+      transition: background 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease);
+    }
+    .btn--primary-orange:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    .nav--dark .btn--primary-orange { background: var(--white); color: var(--ink); border-color: var(--white); }
+    .nav--dark .btn--primary-orange:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    .btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+    .btn--secondary:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    .btn--secondary-inv { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.4); }
+    .btn--secondary-inv:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    .btn--tertiary-inv {
+      padding: 0; background: none; border: none; color: var(--white);
+      gap: 8px; transition: color 0.22s var(--ease); position: relative; z-index: 1;
+    }
+    .btn--tertiary-inv:hover { color: var(--white); transform: none; }
+
+    /* ─────────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────────── */
+    .nav {
+      position: fixed; inset: 0 0 auto; z-index: 200;
+      height: var(--nav-h); display: flex; align-items: center;
+      transition: background 0.35s var(--ease), border-color 0.35s var(--ease), backdrop-filter 0.35s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.is-scrolled {
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+    .nav__inner {
+      width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x);
+      display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    }
+    .nav__logo { display: flex; align-items: center; }
+    .nav__logo-img { height: 40px; width: auto; display: block; transition: filter 0.3s var(--ease); }
+    .nav--dark .nav__logo-img { filter: brightness(0) invert(1); }
+    .nav--light .nav__logo-img { filter: none; }
+    .nav__links { display: flex; align-items: center; gap: 40px; }
+    .nav__link {
+      font-family: var(--f-ui); font-size: 15px; font-weight: 400;
+      line-height: 20px; letter-spacing: -0.3px;
+      position: relative; transition: opacity 0.2s;
+    }
+    .nav__link::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: currentColor;
+      transform: scaleX(0); transform-origin: left; transition: transform 0.22s var(--ease);
+    }
+    .nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); }
+    .nav--dark .nav__logo, .nav--dark .nav__link { color: var(--white); }
+    .nav--light .nav__logo, .nav--light .nav__link { color: var(--ink); }
+
+    /* ─────────────────────────────────────────
+       TYPEWRITER
+    ───────────────────────────────────────── */
+    .tw-char { opacity: 0; transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: inline; }
+    .tw-char.is-visible { opacity: 1; }
+
+    /* ─────────────────────────────────────────
+       PAGE BANNER
+    ───────────────────────────────────────── */
+    .page-banner {
+      min-height: 70vh; background: var(--neutral-50);
+      display: flex; flex-direction: column; justify-content: flex-start;
+    }
+    .page-banner__inner {
+      max-width: var(--max-w); margin: 0 auto; width: 100%;
+      padding: calc(var(--nav-h) + 48px) var(--pad-x) 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .page-banner__left { display: flex; flex-direction: column; align-items: flex-start; align-self: start; }
+    .page-banner__right { display: flex; align-items: center; justify-content: center; border-radius: 16px; overflow: hidden; }
+    .page-banner__gif {
+      width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+      border-radius: 16px; display: block;
+      transform: scale(1.05); mix-blend-mode: multiply;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb {
+      display: inline-flex; align-items: center; gap: 0;
+      margin-bottom: 40px; background: rgba(0,0,0,0.04);
+      border: 1px solid var(--neutral-200); border-radius: 999px; padding: 5px 6px 5px 14px;
+    }
+    .breadcrumb__item {
+      font-family: var(--f-ui); font-size: 13px; font-weight: 400;
+      line-height: 16px; letter-spacing: 0; color: var(--neutral-700);
+      padding: 0 2px; transition: color 0.2s var(--ease);
+    }
+    .breadcrumb__item:hover { color: var(--ink); }
+    .breadcrumb__sep { color: var(--neutral-400); font-size: 11px; line-height: 16px; padding: 0 6px; pointer-events: none; user-select: none; }
+    .breadcrumb__item--current {
+      background: var(--ink); color: var(--white); font-weight: 500;
+      border-radius: 999px; padding: 4px 12px; pointer-events: none; margin-left: 4px;
+    }
+
+    .page-banner__heading {
+      font-family: var(--f-display); font-size: 80px; font-weight: 500;
+      line-height: 80px; letter-spacing: -4px; color: var(--ink);
+      max-width: 760px; margin-bottom: 28px;
+    }
+    .page-banner__sub {
+      font-family: var(--f-ui); font-size: 20px; font-weight: 400;
+      line-height: 28px; letter-spacing: -0.5px; color: var(--mid); max-width: 560px;
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE NAV
+    ───────────────────────────────────────── */
+    .nav__hamburger { display: none; }
+    .mobile-nav     { display: none; }
+
+    @media (max-width: 768px) {
+      :root { --pad-x: 20px; --sec-py: 60px; }
+      .nav__links, .nav__cta-wrap { display: none !important; }
+      .nav__hamburger {
+        display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        width: 40px; height: 40px; background: none; border: none; cursor: pointer;
+        padding: 6px; margin-left: auto; z-index: 201; position: relative;
+      }
+      .nav__hamburger span {
+        display: block; width: 22px; height: 1.5px; background: var(--ink);
+        border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: center;
+      }
+      .nav__hamburger.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
+      .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+      .mobile-nav {
+        display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+        position: fixed; inset: 0; background: var(--ink); z-index: 200;
+        padding: 100px 32px 48px;
+        transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+        pointer-events: none;
+      }
+      .mobile-nav.is-open { transform: translateY(0); pointer-events: all; }
+      .mobile-nav__links { list-style: none; padding: 0; margin: 0 0 40px; width: 100%; }
+      .mobile-nav__link {
+        display: block; font-family: var(--f-display); font-size: 36px; font-weight: 500;
+        color: var(--neutral-100); text-decoration: none; padding: 14px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 0.2s;
+      }
+      .mobile-nav__link:hover { color: var(--orange); }
+      .mobile-nav__cta { margin-top: auto; }
+      .page-banner__inner { grid-template-columns: 1fr; gap: 40px; }
+      .page-banner__right { order: -1; }
+      .page-banner__gif { max-height: 260px; }
+      .page-banner__heading { font-size: 48px; line-height: 50px; letter-spacing: -2px; }
+      .page-banner__sub { font-size: 17px; line-height: 25px; }
+      .intro__inner { grid-template-columns: 1fr; gap: 32px; }
+      .t-h2 { font-size: 40px !important; line-height: 42px !important; letter-spacing: -2px !important; }
+    }
+
+    /* ─────────────────────────────────────────
+       INTRO SECTION
+    ───────────────────────────────────────── */
+    .intro { background: var(--white); padding: var(--sec-py) 0; }
+    .intro__inner {
+      max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    }
+    .intro__heading { position: sticky; top: calc(var(--nav-h) + 40px); }
+    .intro__heading em { font-style: italic; font-weight: 400; }
+    .intro__body { color: var(--mid); }
+    .intro__body p + p { margin-top: 24px; }
+
+    /* ─────────────────────────────────────────
+       SUB-SERVICES — tab section (S1 bot-style)
+    ───────────────────────────────────────── */
+    .bot { background: var(--neutral-50); padding: var(--sec-py) 0; }
+    .bot__inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .bot__header { margin-bottom: 56px; }
+
+    .bot-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: stretch; }
+
+    .bot-tabs__media {
+      position: relative; border-radius: 12px; overflow: hidden;
+      background: var(--neutral-100); min-height: 400px;
+    }
+    .bot-tab-img { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s var(--ease); }
+    .bot-tab-img.is-active { opacity: 1; }
+    .bot-tab-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+
+    .bot-tabs__cards { display: flex; flex-direction: column; justify-content: flex-start; }
+
+    .bot-tab {
+      position: relative; padding: 28px 0; cursor: pointer;
+      border-top: 1px solid var(--border); overflow: hidden;
+    }
+    .bot-tab:last-child { border-bottom: 1px solid var(--border); }
+
+    .bot-tab::before {
+      content: ''; position: absolute; top: -1px; left: 0; right: 0;
+      height: 2px; background: var(--border); border-radius: 999px;
+    }
+    .bot-tab::after {
+      content: ''; position: absolute; top: -1px; left: 0;
+      height: 2px; width: 0; background: var(--orange-dark); border-radius: 999px;
+    }
+    .bot-tab.is-active::after { animation: bot-progress var(--bot-dur, 4s) linear forwards; }
+    @keyframes bot-progress { from { width: 0; } to { width: 100%; } }
+
+    .bot-tab__title {
+      font-family: var(--f-display); font-size: 36px; font-weight: 500;
+      line-height: 38px; letter-spacing: -1.5px; color: var(--muted);
+      transition: color 0.25s var(--ease); margin-bottom: 10px;
+    }
+    .bot-tab.is-active .bot-tab__title { color: var(--ink); }
+
+    .bot-tab__body {
+      font-family: var(--f-ui); font-size: 15px; font-weight: 400;
+      line-height: 22px; color: var(--mid);
+      opacity: 0; max-height: 0; overflow: hidden; transform: translateY(4px);
+      transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .bot-tab.is-active .bot-tab__body { opacity: 1; max-height: 200px; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .bot-tabs { grid-template-columns: 1fr; }
+      .bot-tabs__media { min-height: 240px; }
+    }
+
+    /* ─────────────────────────────────────────
+       PLATFORMS — AUTO-SCROLL CAROUSEL
+    ───────────────────────────────────────── */
+    .cap-carousel { background: var(--white); padding: var(--sec-py) 0; overflow: hidden; }
+    .cap-carousel__header { max-width: var(--max-w); margin: 0 auto 56px; padding: 0 var(--pad-x); text-align: center; }
+    .cap-carousel__track-wrap {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+    .cap-carousel__track {
+      display: flex; align-items: flex-start; gap: 20px;
+      width: max-content; padding: 20px 0 40px;
+      animation: cap-scroll 28s linear infinite;
+    }
+    .cap-card:nth-child(odd)  { margin-top: 0; }
+    .cap-card:nth-child(even) { margin-top: 48px; }
+    .cap-carousel__track-wrap:hover .cap-carousel__track { animation-play-state: paused; }
+    @keyframes cap-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .cap-card {
+      flex-shrink: 0; width: 300px; min-height: 220px; border-radius: 12px;
+      background: var(--yellow-50); border: 1px solid var(--yellow-100);
+      padding: 32px; display: flex; flex-direction: column; gap: 16px;
+      position: relative; overflow: hidden; cursor: default;
+      transition: background 0.25s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+    .cap-card:hover { background: var(--yellow-200); border-color: var(--yellow-200); box-shadow: 0 12px 40px rgba(0,0,0,0.07); }
+    .cap-card__icon { width: 28px; height: 28px; color: var(--yellow-700); flex-shrink: 0; transition: color 0.25s var(--ease); }
+    .cap-card:hover .cap-card__icon { color: var(--ink); }
+    .cap-card__heading {
+      font-family: var(--f-ui); font-size: 24px; font-weight: 500;
+      line-height: 1.2; letter-spacing: -1px; color: var(--yellow-800);
+      transition: color 0.25s var(--ease);
+    }
+    .cap-card:hover .cap-card__heading { color: var(--ink); }
+    .cap-card__body { font-family: var(--f-ui); font-size: 14px; font-weight: 400; line-height: 21px; color: var(--neutral-700); transition: color 0.25s var(--ease); }
+    .cap-card:hover .cap-card__body { color: var(--ink); }
+    .cap-card__stat {
+      font-family: var(--f-display); font-size: 32px; font-weight: 500;
+      line-height: 1; letter-spacing: -1px; color: var(--yellow-700);
+      transition: color 0.25s var(--ease);
+    }
+    .cap-card:hover .cap-card__stat { color: var(--ink); }
+
+    /* ─────────────────────────────────────────
+       IMPACT NUMBERS
+    ───────────────────────────────────────── */
+    .impact { background: var(--neutral-50); padding: var(--sec-py) 0; }
+    .impact__inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .impact__header { text-align: center; margin-bottom: 72px; }
+    .impact__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+
+    .impact-stat {
+      display: flex; flex-direction: column; gap: 16px;
+      padding-top: 48px; padding-left: 20px;
+      border-top: 1px solid var(--green-500);
+      transition: border-color 0.4s var(--ease);
+      position: relative; overflow: hidden;
+    }
+    .impact-stat:hover { border-color: var(--green-500); }
+    .impact-stat:hover .impact-stat__val { color: var(--green-700); }
+
+    .impact-stat::before {
+      content: ''; position: absolute; top: -10px; left: 50%;
+      transform: translateX(-50%); width: 100%; height: 50%;
+      background: radial-gradient(ellipse 100% 100% at 50% 0%,
+        rgba(0, 183, 132, 0.50) 0%, rgba(0, 183, 132, 0) 93%);
+      opacity: 0; transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none; z-index: 0;
+    }
+    .impact-stat:hover::before { opacity: 1; }
+
+    @keyframes impact-fade-up {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .impact-stat--animate { opacity: 0; }
+    .impact-stat--animate.is-visible { animation: impact-fade-up 0.7s cubic-bezier(0,0,0.2,1) forwards; }
+    .impact-stat--animate.is-visible:nth-child(1) { animation-delay: 0.1s; }
+    .impact-stat--animate.is-visible:nth-child(2) { animation-delay: 0.3s; }
+    .impact-stat--animate.is-visible:nth-child(3) { animation-delay: 0.5s; }
+    .impact-stat--animate.is-visible:nth-child(4) { animation-delay: 0.7s; }
+
+    .impact-stat__val {
+      font-family: var(--f-display); font-size: 72px; font-weight: 500;
+      line-height: 72px; letter-spacing: -3px; color: var(--ink);
+      transition: color 0.22s var(--ease); position: relative; z-index: 1;
+    }
+    .impact-stat__label {
+      font-family: var(--f-ui); font-size: 18px; font-weight: 400;
+      line-height: 26px; letter-spacing: -0.5px; color: var(--mid);
+      position: relative; z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .impact__grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .impact-stat__val { font-size: 48px; line-height: 48px; }
+    }
+
+    /* ─────────────────────────────────────────
+       CASE STUDIES
+    ───────────────────────────────────────── */
+    .section-dark { background: var(--ink); }
+    .section__inner { max-width: var(--max-w); margin: 0 auto; padding: var(--sec-py) var(--pad-x); }
+
+    .case-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+
+    .case-card {
+      border: 1px solid transparent; border-radius: 12px;
+      padding: 52px 40px; display: flex; flex-direction: column; gap: 40px;
+      background:
+        linear-gradient(var(--ink), var(--ink)) padding-box,
+        linear-gradient(to bottom, transparent 0%, rgba(200, 70, 20, 0.35) 100%) border-box;
+      position: relative; overflow: hidden; cursor: pointer;
+      transition: background 0.6s ease, transform 0.4s var(--ease);
+    }
+    .case-card::before {
+      content: ''; position: absolute; bottom: -10%; left: 50%;
+      transform: translateX(-50%) translateY(60%) scale(1); transform-origin: center bottom;
+      width: 100%; height: 70%;
+      background: radial-gradient(ellipse at center bottom,
+        rgba(190, 60, 15, 0.85) 0%, rgba(140, 35, 10, 0.45) 45%, transparent 72%);
+      border-radius: 50%;
+      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0.7; pointer-events: none;
+    }
+    .case-card:hover {
+      background:
+        linear-gradient(var(--ink), var(--ink)) padding-box,
+        linear-gradient(to bottom, transparent 0%, rgba(243, 117, 44, 0.65) 100%) border-box;
+      transform: translateY(-2px);
+    }
+    .case-card:hover::before { transform: translateX(-50%) translateY(0%) scale(2); opacity: 1; }
+    .case-card__label { color: var(--orange); transition: color 0.4s var(--ease); position: relative; z-index: 1; }
+    .case-card:hover .case-card__label { color: var(--white); }
+    .case-card__heading {
+      font-family: var(--f-display); font-size: 32px; font-weight: 500;
+      line-height: 36px; letter-spacing: -1px; color: var(--white);
+      flex: 1; position: relative; z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .case-grid { grid-template-columns: 1fr; }
+      .case-card { padding: 36px 24px; }
+      .case-card__heading { font-size: 26px; line-height: 30px; }
+    }
+
+    /* ─────────────────────────────────────────
+       INSIGHTS
+    ───────────────────────────────────────── */
+    .insights { background: var(--white); padding: var(--sec-py) 0; }
+    .insights__inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .insights__header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 40px; margin-bottom: 56px;
+    }
+    .insights__header em { font-style: italic; font-weight: 400; }
+    .insights__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); align-items: start; }
+
+    .insight-cell { display: flex; flex-direction: column; }
+    .insight-cell:nth-child(1) { padding-top: 0; }
+    .insight-cell:nth-child(2) { padding-top: 80px; }
+    .insight-cell:nth-child(3) { padding-top: 160px; }
+
+    .insight-card {
+      display: flex; flex-direction: column; background: none; border: none;
+      transition: transform 0.25s var(--ease); cursor: pointer;
+    }
+    .insight-card:hover { transform: translateY(-4px); }
+
+    .insight-card__media {
+      width: 100%; aspect-ratio: 3 / 2; background: var(--neutral-50);
+      position: relative; overflow: hidden; flex-shrink: 0;
+      border-radius: 12px; transition: background 0.3s var(--ease);
+    }
+    .insight-card:hover .insight-card__media { background: var(--neutral-100); }
+    .insight-card__media::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(243,117,44,0.08) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.4s var(--ease);
+    }
+    .insight-card:hover .insight-card__media::after { opacity: 1; }
+
+    .insight-card__tag {
+      position: absolute; bottom: 16px; left: 16px;
+      font-family: var(--f-ui); font-size: 11px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--orange);
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 999px; padding: 4px 10px;
+    }
+    .insight-card__body { padding: 20px 0 0; display: flex; flex-direction: column; flex: 1; gap: 0; }
+    .insight-card__heading {
+      font-family: var(--f-ui); font-size: 24px; font-weight: 500;
+      line-height: 1.2; letter-spacing: -1px; color: var(--ink);
+      margin-bottom: 14px; transition: color 0.2s var(--ease);
+    }
+    .insight-card__footer { display: flex; align-items: center; padding-top: 16px; }
+    .insight-card__link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--f-ui); font-size: 14px; font-weight: 500; color: var(--ink);
+      transition: color 0.2s var(--ease), gap 0.2s var(--ease);
+    }
+    .insight-card:hover .insight-card__link { gap: 10px; }
+
+    @media (max-width: 768px) {
+      .insights__grid { grid-template-columns: 1fr; }
+      .insight-cell:nth-child(1), .insight-cell:nth-child(2), .insight-cell:nth-child(3) { padding-top: 0; }
+      .insights__header { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+
+    /* ─────────────────────────────────────────
+       CONNECT — dark CTA band
+    ───────────────────────────────────────── */
+    .connect { background: var(--ink); }
+    .connect .section__inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 40px; }
+    .connect__heading {
+      font-family: var(--f-display); font-size: 64px; font-weight: 500;
+      line-height: 64px; letter-spacing: -3px; color: var(--white); margin-bottom: 48px;
+    }
+    .connect__heading em { font-style: italic; font-weight: 400; }
+    .connect .eyebrow { color: var(--neutral-400); }
+    .connect .btn--secondary { color: var(--white); border-color: rgba(255,255,255,0.3); }
+    .connect .btn--secondary:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    /* ─────────────────────────────────────────
+       PAGE-CONTENT / FOOTER-REVEAL
+    ───────────────────────────────────────── */
+    .page-content { position: relative; z-index: 1; box-shadow: 0 24px 80px 20px rgba(0,0,0,0.85); }
+
+    .footer-reveal { position: sticky; bottom: 0; z-index: 0; height: 56vh; overflow: hidden; background: var(--ink); }
+    .footer-reveal__img {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%; object-fit: cover; object-position: center 60%; display: block;
+    }
+    .footer-reveal::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 30%; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.55));
+      z-index: 1; pointer-events: none;
+    }
+    .footer-reveal__legal {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--pad-x) 40px; max-width: var(--max-w); margin: 0 auto;
+      width: 100%; box-sizing: border-box;
+    }
+    .footer-reveal__copyright { font-family: var(--f-ui); font-size: 13px; color: var(--neutral-500); }
+    .footer-reveal__policy { display: flex; gap: 24px; }
+    .footer-reveal__policy a {
+      font-family: var(--f-ui); font-size: 13px; color: var(--neutral-500);
+      transition: color 0.18s; text-decoration: none;
+    }
+    .footer-reveal__policy a:hover { color: var(--white); }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    .footer { background: var(--ink); }
+    .footer__inner { max-width: var(--max-w); margin: 0 auto; padding: 60px var(--pad-x); border-top: 1px solid var(--border-dk); }
+    .footer__top { display: grid; grid-template-columns: repeat(6, 1fr); gap: 32px; }
+    .footer__acc-btn {
+      display: block; width: 100%; text-align: left; background: none; border: none;
+      padding: 0; cursor: default; pointer-events: none;
+      font-family: var(--f-ui); font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--white); margin-bottom: 24px;
+    }
+    .footer__acc-chevron { display: none; }
+    .footer__acc-panel { overflow: visible; max-height: none; }
+    .footer__links { display: flex; flex-direction: column; gap: 16px; }
+    .footer__link {
+      font-family: var(--f-ui); font-size: 14px; font-weight: 400;
+      line-height: 21px; color: var(--neutral-500); transition: color 0.18s;
+    }
+    .footer__link:hover { color: var(--white); }
+
+    @media (max-width: 768px) {
+      .footer__inner { padding: 48px var(--pad-x) 32px; }
+      .footer__top { display: flex !important; flex-direction: column; gap: 0; }
+      .footer__acc { border-bottom: 1px solid var(--border-dk); }
+      .footer__acc:first-child { border-top: 1px solid var(--border-dk); }
+      .footer__acc-btn {
+        display: flex !important; justify-content: space-between; align-items: center;
+        padding: 18px 0; margin-bottom: 0; cursor: pointer; pointer-events: auto;
+      }
+      .footer__acc-chevron {
+        display: block; width: 16px; height: 16px; flex-shrink: 0;
+        color: var(--neutral-500); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      }
+      .footer__acc.is-open .footer__acc-chevron { transform: rotate(180deg); }
+      .footer__acc-panel { overflow: hidden !important; max-height: 0 !important; transition: max-height 0.35s cubic-bezier(0.22,1,0.36,1); }
+      .footer__acc.is-open .footer__acc-panel { max-height: 400px !important; }
+      .footer__acc-panel .footer__links { padding-bottom: 20px; }
+      .footer-reveal { height: 45vh; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="page-content">
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════ -->
+  <nav class="nav nav--light" id="mainNav" aria-label="Primary navigation">
+    <div class="nav__inner">
+
+      <a href="Feuji_Home.html" class="nav__logo">
+        <img src="Assets/images/feuji-orange-logo.png" alt="Feuji" class="nav__logo-img" />
+      </a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="Feuji_Home.html#ai-engineering" class="nav__link t-nav">Applied AI</a></li>
+        <li><a href="Feuji_Home.html#services"       class="nav__link t-nav is-active">Services</a></li>
+        <li><a href="Feuji_Home.html#services"       class="nav__link t-nav">Industries</a></li>
+        <li><a href="Feuji_Home.html#community"      class="nav__link t-nav">Community</a></li>
+        <li><a href="Feuji_Home.html#case-studies"   class="nav__link t-nav">Insights</a></li>
+        <li><a href="Feuji_Home.html#about"          class="nav__link t-nav">Who we are</a></li>
+      </ul>
+
+      <div class="nav__cta-wrap">
+        <a href="Feuji_Home.html#connect" class="btn btn--primary-orange t-btn">Let's connect <span class="btn-arrow">→</span></a>
+      </div>
+
+      <button class="nav__hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </nav>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <ul class="mobile-nav__links" role="list">
+      <li><a href="Feuji_Home.html#ai-engineering" class="mobile-nav__link">Applied AI</a></li>
+      <li><a href="Feuji_Home.html#services"       class="mobile-nav__link">Services</a></li>
+      <li><a href="Feuji_Home.html#services"       class="mobile-nav__link">Industries</a></li>
+      <li><a href="Feuji_Home.html#community"      class="mobile-nav__link">Community</a></li>
+      <li><a href="Feuji_Home.html#case-studies"   class="mobile-nav__link">Insights</a></li>
+      <li><a href="Feuji_Home.html#about"          class="mobile-nav__link">Who we are</a></li>
+    </ul>
+    <a href="Feuji_Home.html#connect" class="btn btn--primary-orange t-btn mobile-nav__cta">Let's connect <span class="btn-arrow">→</span></a>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       PAGE BANNER
+  ══════════════════════════════════════ -->
+  <section class="page-banner" id="banner" aria-labelledby="banner-heading">
+    <div class="page-banner__inner">
+
+      <div class="page-banner__left">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="Feuji_Home.html" class="breadcrumb__item">Home</a>
+          <span class="breadcrumb__sep" aria-hidden="true">/</span>
+          <a href="Feuji_Home.html#services" class="breadcrumb__item">Services</a>
+          <span class="breadcrumb__sep" aria-hidden="true">/</span>
+          <span class="breadcrumb__item breadcrumb__item--current" aria-current="page">Quality Engineering</span>
+        </nav>
+
+        <h1 class="page-banner__heading" id="banner-heading">Quality Engineering as a <em>Service</em></h1>
+
+        <p class="page-banner__sub">
+          Ensuring release confidence from day one with AI-native quality engineering.
+        </p>
+      </div>
+
+      <div class="page-banner__right">
+        <!-- Banner image placeholder -->
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       OVERVIEW
+  ══════════════════════════════════════ -->
+  <section id="intro" class="intro" aria-labelledby="intro-heading">
+    <div class="intro__inner">
+
+      <div class="intro__heading">
+        <h2 id="intro-heading" class="t-h2">Meet the demands of <em>modern software delivery</em></h2>
+      </div>
+
+      <div class="intro__body t-body-l reveal reveal-d1">
+        <p>
+          Today's enterprise release environments move faster than traditional quality engineering can support. This often leads to fragmented testing environments, inconsistent automation, delayed release cycles, and limited visibility across quality operations.
+        </p>
+        <p>
+          We solve these challenges with our AI-native approach to quality engineering. By embedding AI-driven automation, continuous testing, and outcome-governed quality operations directly into delivery workflows, we help you accelerate releases, strengthen test coverage, and improve confidence across the software lifecycle.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SUB-SERVICES
+  ══════════════════════════════════════ -->
+  <section id="sub-services" class="bot" aria-labelledby="sub-heading">
+    <div class="bot__inner">
+
+      <div class="bot__header reveal">
+        <span class="t-label-s eyebrow">Sub-services</span>
+        <h2 id="sub-heading" class="t-h2">Turn quality into your <em>growth driver</em></h2>
+      </div>
+
+      <div class="bot-tabs reveal">
+
+        <div class="bot-tabs__media">
+          <div class="bot-tab-img is-active" data-tab="0">
+            <img src="Assets/images/services-gcc-BOT-model/Build.jpg" alt="QE Advisory" />
+          </div>
+          <div class="bot-tab-img" data-tab="1">
+            <img src="Assets/images/services-gcc-BOT-model/operate.jpg" alt="Core Quality Engineering" />
+          </div>
+          <div class="bot-tab-img" data-tab="2">
+            <img src="Assets/images/services-gcc-BOT-model/transfer.jpg" alt="Non-Functional Engineering" />
+          </div>
+          <div class="bot-tab-img" data-tab="3">
+            <img src="Assets/images/services-gcc-BOT-model/Build.jpg" alt="Digital & Experience Assurance" />
+          </div>
+        </div>
+
+        <div class="bot-tabs__cards">
+
+          <div class="bot-tab is-active" data-tab="0">
+            <h3 class="bot-tab__title">QE Advisory &amp; Transformation</h3>
+            <p class="bot-tab__body">Transform fragmented quality operations into AI-native engineering ecosystems with clear automation roadmaps, maturity insights, and scalable transformation strategies.</p>
+          </div>
+
+          <div class="bot-tab" data-tab="1">
+            <h3 class="bot-tab__title">Core Quality Engineering</h3>
+            <p class="bot-tab__body">Improve release reliability through automated functional testing, regression validation, API testing, and self-healing quality frameworks embedded across delivery workflows.</p>
+          </div>
+
+          <div class="bot-tab" data-tab="2">
+            <h3 class="bot-tab__title">Non-Functional Engineering</h3>
+            <p class="bot-tab__body">Strengthen application resilience with performance engineering, security validation, observability, and risk-driven testing built for enterprise-scale environments.</p>
+          </div>
+
+          <div class="bot-tab" data-tab="3">
+            <h3 class="bot-tab__title">Digital &amp; Experience Assurance</h3>
+            <p class="bot-tab__body">Deliver reliable digital experiences through mobile, accessibility, API, IoT, and AI assurance designed for modern user interactions.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       PLATFORMS & CORE CAPABILITIES
+  ══════════════════════════════════════ -->
+  <section id="platforms" class="cap-carousel" aria-labelledby="plat-heading">
+
+    <div class="cap-carousel__header reveal">
+      <span class="t-label-s eyebrow">Powered by</span>
+      <h2 id="plat-heading" class="t-h2" style="margin-top:16px;">Technology built for <em>quality at scale</em></h2>
+    </div>
+
+    <div class="cap-carousel__track-wrap">
+      <div class="cap-carousel__track" aria-label="Platforms carousel">
+
+        <!-- ── Set 1 ── -->
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <h5 class="cap-card__heading">UTAF</h5>
+          <p class="cap-card__body">Unify automation execution across all testing layers with a single, enterprise-grade framework.</p>
+        </div>
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+          <h5 class="cap-card__heading">QualiBrix</h5>
+          <p class="cap-card__body">Reduce costs and boost QA productivity with autonomous testing powered by a unified platform.</p>
+          <span class="cap-card__stat">70+</span>
+          <p class="cap-card__body">automation solutions across 5 accelerators</p>
+        </div>
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+          <h5 class="cap-card__heading">Autonomous QE</h5>
+          <p class="cap-card__body">30 AI agents driving intelligent, self-healing test execution at enterprise scale.</p>
+        </div>
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          <h5 class="cap-card__heading">QE POD</h5>
+          <p class="cap-card__body">Improve release velocity with outcome-driven QE teams embedded directly in delivery workflows.</p>
+        </div>
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+          <h5 class="cap-card__heading">Scalable Execution</h5>
+          <p class="cap-card__body">Micro-macro teams aligned to enterprise delivery cadence for consistent quality outcomes at any scale.</p>
+        </div>
+
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <h5 class="cap-card__heading">Risk-Driven Testing</h5>
+          <p class="cap-card__body">Focus coverage where it matters most with AI-prioritised test selection and risk-based quality gates.</p>
+        </div>
+
+        <!-- ── Set 2 (duplicate for seamless loop) ── -->
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <h5 class="cap-card__heading">UTAF</h5>
+          <p class="cap-card__body">Unify automation execution across all testing layers with a single, enterprise-grade framework.</p>
+        </div>
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+          <h5 class="cap-card__heading">QualiBrix</h5>
+          <p class="cap-card__body">Reduce costs and boost QA productivity with autonomous testing powered by a unified platform.</p>
+          <span class="cap-card__stat">70+</span>
+          <p class="cap-card__body">automation solutions across 5 accelerators</p>
+        </div>
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+          <h5 class="cap-card__heading">Autonomous QE</h5>
+          <p class="cap-card__body">30 AI agents driving intelligent, self-healing test execution at enterprise scale.</p>
+        </div>
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          <h5 class="cap-card__heading">QE POD</h5>
+          <p class="cap-card__body">Improve release velocity with outcome-driven QE teams embedded directly in delivery workflows.</p>
+        </div>
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+          <h5 class="cap-card__heading">Scalable Execution</h5>
+          <p class="cap-card__body">Micro-macro teams aligned to enterprise delivery cadence for consistent quality outcomes at any scale.</p>
+        </div>
+
+        <div class="cap-card" aria-hidden="true">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <h5 class="cap-card__heading">Risk-Driven Testing</h5>
+          <p class="cap-card__body">Focus coverage where it matters most with AI-prioritised test selection and risk-based quality gates.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       IMPACT NUMBERS
+  ══════════════════════════════════════ -->
+  <section id="impact" class="impact" aria-labelledby="impact-heading">
+    <div class="impact__inner">
+
+      <div class="impact__header">
+        <span class="t-label-s eyebrow reveal">Impact numbers</span>
+        <h2 id="impact-heading" class="t-h2 reveal" style="margin-top:20px; max-width:720px; margin-left:auto; margin-right:auto;">
+          Accelerate to value with <em>measurable outcomes</em>
+        </h2>
+      </div>
+
+      <div class="impact__grid" aria-label="Impact statistics">
+
+        <div class="impact-stat impact-stat--animate">
+          <span class="impact-stat__val">20–30%</span>
+          <p class="impact-stat__label">faster release cycles</p>
+        </div>
+
+        <div class="impact-stat impact-stat--animate">
+          <span class="impact-stat__val">25–40%</span>
+          <p class="impact-stat__label">reduction in QA effort and cost</p>
+        </div>
+
+        <div class="impact-stat impact-stat--animate">
+          <span class="impact-stat__val">2–4x</span>
+          <p class="impact-stat__label">increase in team productivity</p>
+        </div>
+
+        <div class="impact-stat impact-stat--animate">
+          <span class="impact-stat__val">20–40%</span>
+          <p class="impact-stat__label">improvement in test coverage</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       CASE STUDIES
+  ══════════════════════════════════════ -->
+  <section id="case-studies" class="section-dark" aria-labelledby="qe-cases-heading">
+    <div class="section__inner">
+
+      <div style="margin-bottom: 72px; text-align: center;">
+        <h2 id="qe-cases-heading" class="t-h2 reveal" style="color: var(--white); margin-top: 16px;">
+          See the impact <em>we deliver</em>
+        </h2>
+      </div>
+
+      <div class="case-grid">
+
+        <article class="case-card reveal" tabindex="0" role="article">
+          <p class="t-label-s case-card__label">Case Study</p>
+          <h3 class="case-card__heading">Case study 1 title</h3>
+          <a href="#" class="btn btn--tertiary-inv t-btn">Discover now <span class="btn-arrow">→</span></a>
+        </article>
+
+        <article class="case-card reveal reveal-d2" tabindex="0" role="article">
+          <p class="t-label-s case-card__label">Case Study</p>
+          <h3 class="case-card__heading">Case study 2 title</h3>
+          <a href="#" class="btn btn--tertiary-inv t-btn">Discover now <span class="btn-arrow">→</span></a>
+        </article>
+
+        <article class="case-card reveal reveal-d3" tabindex="0" role="article">
+          <p class="t-label-s case-card__label">Case Study</p>
+          <h3 class="case-card__heading">Case study 3 title</h3>
+          <a href="#" class="btn btn--tertiary-inv t-btn">Discover now <span class="btn-arrow">→</span></a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       INSIGHTS
+  ══════════════════════════════════════ -->
+  <section id="insights" class="insights" aria-labelledby="insights-heading">
+    <div class="insights__inner">
+
+      <div class="insights__header reveal">
+        <h2 id="insights-heading" class="t-h2">Get the <em>latest insights</em></h2>
+        <a href="#" class="btn btn--secondary t-btn">View all insights <span class="btn-arrow">→</span></a>
+      </div>
+
+      <div class="insights__grid">
+
+        <div class="insight-cell">
+          <article class="insight-card reveal">
+            <div class="insight-card__media">
+              <img src="Assets/images/home-services-v002/Cloud-Solutions.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <span class="insight-card__tag">Whitepaper</span>
+            </div>
+            <div class="insight-card__body">
+              <h5 class="insight-card__heading">Insight 1 title</h5>
+              <div class="insight-card__footer">
+                <a href="#" class="insight-card__link">Read more <span>→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="insight-cell">
+          <article class="insight-card reveal reveal-d2">
+            <div class="insight-card__media">
+              <img src="Assets/images/home-services-v002/Data-and-Insights.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <span class="insight-card__tag">Blog</span>
+            </div>
+            <div class="insight-card__body">
+              <h5 class="insight-card__heading">Insight 2 title</h5>
+              <div class="insight-card__footer">
+                <a href="#" class="insight-card__link">Read more <span>→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="insight-cell">
+          <article class="insight-card reveal reveal-d3">
+            <div class="insight-card__media">
+              <img src="Assets/images/home-services-v002/Digital-Engineering.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <span class="insight-card__tag">Webinar</span>
+            </div>
+            <div class="insight-card__body">
+              <h5 class="insight-card__heading">Insight 3 title</h5>
+              <div class="insight-card__footer">
+                <a href="#" class="insight-card__link">Read more <span>→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       CONNECT
+  ══════════════════════════════════════ -->
+  <section id="connect" class="connect" aria-labelledby="qe-connect-heading">
+    <div class="section__inner">
+      <div class="connect__content reveal">
+        <span class="t-label-m eyebrow" style="margin-bottom: 28px; display: block;">Get in touch</span>
+        <h2 id="qe-connect-heading" class="connect__heading">
+          Ready for Applied<br><em>AI Engineering?</em>
+        </h2>
+        <a href="mailto:hello@feuji.com" class="btn btn--secondary t-btn">
+          Let's connect <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+      <div class="footer__top">
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Applied AI
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Feuji AI Labs</a></li>
+              <li><a href="#" class="footer__link">AI &amp; ML Solutions</a></li>
+              <li><a href="#" class="footer__link">AI Innovation Suite</a></li>
+              <li><a href="#" class="footer__link">AI Partnership Ecosystem</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Services
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Consulting</a></li>
+              <li><a href="#" class="footer__link">Cloud Solutions</a></li>
+              <li><a href="#" class="footer__link">Digital Engineering</a></li>
+              <li><a href="#" class="footer__link">Data and Insights</a></li>
+              <li><a href="#" class="footer__link">Cybersecurity</a></li>
+              <li><a href="#" class="footer__link">Managed Services</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Industries
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Healthcare</a></li>
+              <li><a href="#" class="footer__link">Insurance</a></li>
+              <li><a href="#" class="footer__link">Pharma</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Community
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Smart Village</a></li>
+              <li><a href="#" class="footer__link">Education &amp; Training</a></li>
+              <li><a href="Sustainability.html" class="footer__link">Sustainability</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Insights
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Our perspectives</a></li>
+              <li><a href="#" class="footer__link">Research and Whitepapers</a></li>
+              <li><a href="#" class="footer__link">Case Studies and blogs</a></li>
+              <li><a href="#" class="footer__link">Events and webinars</a></li>
+              <li><a href="#" class="footer__link">Feuji Expert Connect</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">Who we are
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Our Story</a></li>
+              <li><a href="#" class="footer__link">People</a></li>
+              <li><a href="#" class="footer__link">Partners</a></li>
+              <li><a href="#" class="footer__link">Leadership</a></li>
+              <li><a href="#" class="footer__link">Careers</a></li>
+              <li><a href="#" class="footer__link">Locations</a></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  </div><!-- /page-content -->
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER REVEAL
+  ══════════════════════════════════════ -->
+  <div class="footer-reveal">
+    <img class="footer-reveal__img"
+         src="Assets/images/Firefly_Gemini-Flash-mountain.png"
+         alt="" aria-hidden="true" />
+    <div class="footer-reveal__legal">
+      <p class="footer-reveal__copyright">© 2025 Feuji. All rights reserved.</p>
+      <div class="footer-reveal__policy">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════ -->
+  <script>
+    /* ── NAV: scroll-aware frosted glass ── */
+    const nav    = document.getElementById('mainNav');
+    const banner = document.getElementById('banner');
+    function updateNav() {
+      const bannerBottom = banner.getBoundingClientRect().bottom;
+      if (bannerBottom > nav.offsetHeight) {
+        nav.classList.add('nav--light');
+        nav.classList.remove('nav--dark', 'is-scrolled');
+      } else {
+        nav.classList.remove('nav--dark');
+        nav.classList.add('nav--light', 'is-scrolled');
+      }
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+
+  <!-- ── Typewriter ── -->
+  <script>
+  (function () {
+    function buildTypewriterDOM(el) {
+      const chars = [];
+      function processChildren(parent) {
+        const nodes = Array.from(parent.childNodes);
+        nodes.forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const raw  = node.textContent;
+            const text = /^\n/.test(raw)
+              ? raw.replace(/^\s+/, '').replace(/[\n\r\t]+$/, '')
+              : raw.replace(/[\n\r\t]+$/, '');
+            if (!text.trim()) { parent.removeChild(node); return; }
+            const frag = document.createDocumentFragment();
+            for (const char of text) {
+              const span = document.createElement('span');
+              span.className = 'tw-char';
+              span.textContent = char;
+              frag.appendChild(span);
+              chars.push(span);
+            }
+            parent.replaceChild(frag, node);
+          } else if (node.nodeName === 'BR') {
+            // leave untouched
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            processChildren(node);
+          }
+        });
+      }
+      processChildren(el);
+      el.classList.add('typewriter-heading');
+      return chars;
+    }
+
+    function setupScrollTypewriter(el) {
+      const chars = buildTypewriterDOM(el);
+      const total = chars.length;
+      const visObs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { el.classList.add('is-visible'); visObs.unobserve(el); } });
+      }, { threshold: 0.05 });
+      visObs.observe(el);
+      function onScroll() {
+        const rect = el.getBoundingClientRect();
+        const vh   = window.innerHeight;
+        const raw  = (vh - rect.top) / (vh * 0.62);
+        const prog = Math.max(0, Math.min(1, raw));
+        const show = Math.round(prog * total);
+        chars.forEach((s, i) => s.classList.toggle('is-visible', i < show));
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    function setupHeroTypewriter(el) {
+      if (!el) return;
+      const chars = buildTypewriterDOM(el);
+      el.classList.add('is-visible');
+      let i = 0;
+      const tick = setInterval(() => {
+        if (i < chars.length) { chars[i].classList.add('is-visible'); i++; }
+        else clearInterval(tick);
+      }, 80);
+    }
+
+    setTimeout(() => setupHeroTypewriter(document.querySelector('.page-banner__heading')), 500);
+    document.querySelectorAll('h2').forEach(el => setupScrollTypewriter(el));
+  })();
+  </script>
+
+  <!-- ── Case cards keyboard ── -->
+  <script>
+  document.querySelectorAll('.case-card[tabindex]').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const link = card.querySelector('a');
+        if (link) { e.preventDefault(); link.click(); }
+      }
+    });
+  });
+  </script>
+
+  <!-- ── Impact numbers: fade-up ── -->
+  <script>
+  (function () {
+    const animStats = document.querySelectorAll('.impact-stat--animate');
+    const grid      = document.querySelector('.impact__grid');
+    if (!animStats.length || !grid) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        animStats.forEach(stat => stat.classList.add('is-visible'));
+        observer.disconnect();
+      });
+    }, { threshold: 0.4, rootMargin: '0px 0px -80px 0px' });
+    observer.observe(grid);
+  })();
+  </script>
+
+  <!-- ── Sub-services tabs: auto-advancing ── -->
+  <script>
+  (function () {
+    const DURATION = 4000;
+    const tabs   = document.querySelectorAll('.bot-tab');
+    const images = document.querySelectorAll('.bot-tab-img');
+    let current = 0;
+    let timer   = null;
+
+    function activate(idx) {
+      tabs.forEach(t => { t.classList.remove('is-active'); void t.offsetWidth; });
+      images.forEach(img => img.classList.remove('is-active'));
+      tabs[idx].classList.add('is-active');
+      images[idx].classList.add('is-active');
+      current = idx;
+    }
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => activate((current + 1) % tabs.length), DURATION);
+    }
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => { activate(idx); startTimer(); });
+    });
+    const component = document.querySelector('.bot-tabs');
+    if (component) {
+      component.addEventListener('mouseenter', () => clearInterval(timer));
+      component.addEventListener('mouseleave', () => startTimer());
+    }
+    activate(0);
+    startTimer();
+  })();
+  </script>
+
+  <!-- ── Scroll reveal ── -->
+  <script>
+  (function () {
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+  })();
+  </script>
+
+  <!-- ── Mobile nav toggle ── -->
+  <script>
+  (function () {
+    const btn    = document.querySelector('.nav__hamburger');
+    const drawer = document.getElementById('mobileNav');
+    const links  = drawer.querySelectorAll('.mobile-nav__link, .mobile-nav__cta');
+    function toggleMenu(open) {
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open);
+      drawer.classList.toggle('is-open', open);
+      drawer.setAttribute('aria-hidden', !open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    btn.addEventListener('click', () => toggleMenu(!btn.classList.contains('is-open')));
+    links.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+  })();
+  </script>
+
+  <!-- ── Footer accordion (mobile) ── -->
+  <script>
+  document.querySelectorAll('.footer__acc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const acc = btn.closest('.footer__acc');
+      const isOpen = acc.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  });
+  </script>
+
+
+</body>
+</html>
