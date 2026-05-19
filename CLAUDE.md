@@ -39,7 +39,7 @@ When asked to build a page "in S1", replicate every structural, spacing, animati
 2. Page Banner (light, neutral-50 bg)
 3. Intro (two-column sticky)
 4. Tab section (BOT-style, neutral-50 bg)
-5. Capabilities carousel (auto-scroll, white bg)
+5. Capabilities section (white bg — static stagger if ≤4 items, auto-scroll carousel if 5+ items)
 6. Impact numbers (neutral-50 bg)
 7. Case studies (dark ink bg)
 8. Insights (cascade, white bg)
@@ -269,14 +269,39 @@ Active tab `::after` pseudo-element animates width 0→100% over the tab duratio
 - Pause on hover
 - Tab body CTA: tertiary style (no pill, ink text, arrow slides right)
 
-### Capabilities Carousel
-- White background
+### Capabilities Section — Stagger vs. Carousel Rule
+
+**≤ 4 capability cards → Static stagger grid (`.cap-static`). No animation. No duplicates.**
+**5+ capability cards → Auto-scroll carousel (`.cap-carousel`). Duplicated card set for seamless loop.**
+
+#### Static Stagger Grid (≤4 items)
+- White background, class `.cap-static`
+- Header centered, class `.cap-static__header`
+- Grid: `.cap-static__grid` — `repeat(3, 1fr)` for 3 cards; add `.cap-static__grid--4` modifier for 4 cards
+- Each card wrapped in `.cap-static__cell` — padding-top cascade:
+  - Cell 1: `padding-top: 0`
+  - Cell 2: `padding-top: 80px`
+  - Cell 3: `padding-top: 160px`
+  - Cell 4: `padding-top: 80px` (balances even grid)
+- Cards fill cell width: `width: 100%`
+- Mobile: single column, all padding-top reset to 0
+- Add `.reveal` + staggered delay classes (`.reveal-d1`, `.reveal-d2`) to cells
+
+#### Auto-Scroll Carousel (5+ items)
+- White background, class `.cap-carousel`, `overflow: hidden`
 - Auto-scrolling belt (28s loop, pauses on hover)
 - Cards: `var(--yellow-50)` bg, `var(--yellow-100)` border → `var(--yellow-200)` on hover
 - Card size: 300px wide, min 220px tall, 12px border-radius
-- Odd cards: margin-top 0. Even cards: margin-top 48px (stagger)
+- Odd cards: margin-top 0. Even cards: margin-top 48px (stagger within track)
 - Edge fade: mask-image gradient left and right
-- **Duplicate card set** for seamless loop
+- **Duplicate card set** for seamless loop (set 2 cards use `aria-hidden="true"`)
+
+#### Cap-Card (shared)
+- Yellow fill, yellow border, hover → yellow-200 + soft shadow
+- Icon: 28px, `var(--yellow-700)` → ink on hover
+- Heading: UI font, 24px, 500, `var(--yellow-800)` → ink on hover
+- Body: UI font, 14px, 400, `var(--neutral-700)` → ink on hover
+- Bold within body: use `<strong>` — same 14px body size, not a separate stat element
 
 ### Impact Numbers
 - Background: `var(--neutral-50)`
@@ -336,6 +361,7 @@ Active tab `::after` pseudo-element animates width 0→100% over the tab duratio
 - Nav: light, no dark phase
 - Banner: neutral-50, no image yet
 - Tab section: Sub-services (4 tabs)
+- Capabilities: **3 cards → static stagger grid** (`.cap-static`, 3-column, padding-top 0/80/160px cascade)
 - Impact: 4 stats, `repeat(4, 1fr)` grid, value font-size 72px
 - Case studies: 2 cards
 

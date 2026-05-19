@@ -437,24 +437,32 @@
     }
 
     /* ─────────────────────────────────────────
-       PLATFORMS — AUTO-SCROLL CAROUSEL
+       PLATFORMS — STATIC STAGGER GRID (≤4 items)
+       Rule: ≤4 capability cards → static stagger, no carousel.
+             5+ capability cards → auto-scroll carousel.
     ───────────────────────────────────────── */
-    .cap-carousel { background: var(--white); padding: var(--sec-py) 0; overflow: hidden; }
-    .cap-carousel__header { max-width: var(--max-w); margin: 0 auto 56px; padding: 0 var(--pad-x); text-align: center; }
-    .cap-carousel__track-wrap {
-      overflow: hidden;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-              mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    .cap-static { background: var(--white); padding: var(--sec-py) 0; }
+    .cap-static__header { max-width: var(--max-w); margin: 0 auto 56px; padding: 0 var(--pad-x); text-align: center; }
+    .cap-static__grid {
+      max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x) 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      align-items: start;
     }
-    .cap-carousel__track {
-      display: flex; align-items: flex-start; gap: 20px;
-      width: max-content; padding: 20px 0 40px;
-      animation: cap-scroll 28s linear infinite;
+    /* 4-column variant for exactly 4 cards */
+    .cap-static__grid--4 { grid-template-columns: repeat(4, 1fr); }
+    /* Stagger cascade — each cell drops lower than the previous */
+    .cap-static__cell:nth-child(1) { padding-top: 0; }
+    .cap-static__cell:nth-child(2) { padding-top: 80px; }
+    .cap-static__cell:nth-child(3) { padding-top: 160px; }
+    .cap-static__cell:nth-child(4) { padding-top: 80px; }
+    /* Cards inside stagger grid fill their cell width */
+    .cap-static__cell .cap-card { width: 100%; flex-shrink: unset; }
+
+    @media (max-width: 768px) {
+      .cap-static__grid,
+      .cap-static__grid--4 { grid-template-columns: 1fr; }
+      .cap-static__cell { padding-top: 0 !important; }
     }
-    .cap-card:nth-child(odd)  { margin-top: 0; }
-    .cap-card:nth-child(even) { margin-top: 48px; }
-    .cap-carousel__track-wrap:hover .cap-carousel__track { animation-play-state: paused; }
-    @keyframes cap-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     .cap-card {
       flex-shrink: 0; width: 300px; min-height: 220px; border-radius: 12px;
@@ -892,19 +900,18 @@
 
   <!-- ══════════════════════════════════════
        PLATFORMS & CORE CAPABILITIES
+       3 cards → static stagger grid (≤4 rule)
   ══════════════════════════════════════ -->
-  <section id="platforms" class="cap-carousel" aria-labelledby="plat-heading">
+  <section id="platforms" class="cap-static" aria-labelledby="plat-heading">
 
-    <div class="cap-carousel__header reveal">
+    <div class="cap-static__header reveal">
       <span class="t-label-s eyebrow">Platforms and core capabilities</span>
       <h2 id="plat-heading" class="t-h2" style="margin-top:16px;">Powered by</h2>
     </div>
 
-    <div class="cap-carousel__track-wrap">
-      <div class="cap-carousel__track" aria-label="Platforms carousel">
+    <div class="cap-static__grid">
 
-        <!-- ── Set 1 ── -->
-
+      <div class="cap-static__cell reveal">
         <div class="cap-card">
           <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -912,52 +919,29 @@
           <h5 class="cap-card__heading">UTAF</h5>
           <p class="cap-card__body">Unify automation execution across all testing layers.</p>
         </div>
-
-        <div class="cap-card">
-          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
-          </svg>
-          <h5 class="cap-card__heading">QualiBrix</h5>
-          <p class="cap-card__body"><strong>One platform. 5 accelerators. 70+ automation solutions.</strong><br>Reduce costs and boost QA productivity with autonomous testing.<br><strong>Autonomous quality engine. 30 AI agents.</strong></p>
-        </div>
-
-        <div class="cap-card">
-          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-          </svg>
-          <h5 class="cap-card__heading">QE POD</h5>
-          <p class="cap-card__body">Improve release velocity with outcome-driven QE teams embedded in delivery.<br><strong>Micro-macro teams. Scalable execution.</strong></p>
-        </div>
-
-        <!-- ── Set 2 (duplicate for seamless loop) ── -->
-
-        <div class="cap-card" aria-hidden="true">
-          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-          <h5 class="cap-card__heading">UTAF</h5>
-          <p class="cap-card__body">Unify automation execution across all testing layers.</p>
-        </div>
-
-        <div class="cap-card" aria-hidden="true">
-          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
-          </svg>
-          <h5 class="cap-card__heading">QualiBrix</h5>
-          <p class="cap-card__body"><strong>One platform. 5 accelerators. 70+ automation solutions.</strong><br>Reduce costs and boost QA productivity with autonomous testing.<br><strong>Autonomous quality engine. 30 AI agents.</strong></p>
-        </div>
-
-        <div class="cap-card" aria-hidden="true">
-          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-          </svg>
-          <h5 class="cap-card__heading">QE POD</h5>
-          <p class="cap-card__body">Improve release velocity with outcome-driven QE teams embedded in delivery.<br><strong>Micro-macro teams. Scalable execution.</strong></p>
-        </div>
-
       </div>
+
+      <div class="cap-static__cell reveal reveal-d1">
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+          </svg>
+          <h5 class="cap-card__heading">QualiBrix</h5>
+          <p class="cap-card__body"><strong>One platform. 5 accelerators. 70+ automation solutions.</strong><br>Reduce costs and boost QA productivity with autonomous testing.<br><strong>Autonomous quality engine. 30 AI agents.</strong></p>
+        </div>
+      </div>
+
+      <div class="cap-static__cell reveal reveal-d2">
+        <div class="cap-card">
+          <svg class="cap-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          <h5 class="cap-card__heading">QE POD</h5>
+          <p class="cap-card__body">Improve release velocity with outcome-driven QE teams embedded in delivery.<br><strong>Micro-macro teams. Scalable execution.</strong></p>
+        </div>
+      </div>
+
     </div>
   </section>
 
