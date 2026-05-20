@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feuji — Applied AI Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ════════════════════════════════════════════════
+       DESIGN TOKENS — identical to V001
+    ════════════════════════════════════════════════ */
+    :root {
+      --f-display: 'Cormorant Garamond', Georgia, serif;
+      --f-ui:      'DM Sans', system-ui, sans-serif;
+
+      --neutral-50:  #F9F9F9;
+      --neutral-100: #EAEAEA;
+      --neutral-200: #DFDFDF;
+      --neutral-300: #C1C1C1;
+      --neutral-400: #A2A2A2;
+      --neutral-500: #848484;
+      --neutral-700: #474747;
+      --neutral-800: #292929;
+      --ink:         #0A0A0A;
+      --ink-90:      #1A1A1A;
+      --ink-70:      #333333;
+      --mid:         #656565;
+      --muted:       #848484;
+      --border:      var(--neutral-200);
+      --border-dk:   var(--neutral-800);
+      --surface:     var(--neutral-50);
+      --white:       #FFFFFF;
+
+      --orange:       #F3752C;
+      --orange-light: #FEF3EC;
+      --orange-dark:  #DA6A29;
+
+      --green-100: #A4EBDB;
+      --green-200: #5DDCC2;
+      --green-300: #00CEA9;
+      --green-400: #00BE91;
+      --green-500: #00B784;
+      --green-600: #00A577;
+      --green-700: #00805D;
+      --green-800: #005C43;
+      --green-900: #003727;
+
+      --nav-h:  80px;
+      --max-w:  1280px;
+      --pad-x:  80px;
+      --sec-py: 96px;
+      --gap:    32px;
+    }
+
+    /* ════════════════════════════════════════════════
+       RESET
+    ════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: var(--f-ui);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a   { text-decoration: none; color: inherit; }
+    ul  { list-style: none; }
+    img, svg, video { display: block; max-width: 100%; }
+    button { cursor: pointer; background: none; border: none; font-family: inherit; }
+
+    /* ════════════════════════════════════════════════
+       TYPOGRAPHY — exact V001 token values
+    ════════════════════════════════════════════════ */
+    .t-label-s  { font-family: var(--f-ui); font-size: 12px; font-weight: 600; line-height: 13px; letter-spacing: 1px; text-transform: uppercase; }
+    .t-label-m  { font-family: var(--f-ui); font-size: 14px; font-weight: 600; line-height: 15px; letter-spacing: 1px; text-transform: uppercase; }
+    .t-display-m{ font-family: var(--f-display); font-size: 72px; font-weight: 500; line-height: 72px; letter-spacing: -3px; }
+    .t-h2       { font-family: var(--f-display); font-size: 64px; font-weight: 500; line-height: 64px; letter-spacing: -3px; }
+    .t-h3       { font-family: var(--f-display); font-size: 40px; font-weight: 500; line-height: 40px; letter-spacing: -2px; }
+    .t-h4       { font-family: var(--f-ui); font-size: 32px; font-weight: 500; line-height: 35px; letter-spacing: -1px; }
+    .t-h5       { font-family: var(--f-ui); font-size: 24px; font-weight: 500; line-height: 29px; letter-spacing: -1px; }
+    .t-body-xl  { font-family: var(--f-ui); font-size: 20px; font-weight: 400; line-height: 28px; letter-spacing: -1px; }
+    .t-body-l   { font-family: var(--f-ui); font-size: 18px; font-weight: 400; line-height: 25px; letter-spacing: -1px; }
+    .t-body-m   { font-family: var(--f-ui); font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: 0; }
+    .t-body-s   { font-family: var(--f-ui); font-size: 14px; font-weight: 400; line-height: 21px; letter-spacing: 0; }
+    .t-btn      { font-family: var(--f-ui); font-size: 16px; font-weight: 400; line-height: 18px; letter-spacing: 0; }
+    .t-nav      { font-family: var(--f-ui); font-size: 16px; font-weight: 400; line-height: 20px; letter-spacing: -0.5px; }
+
+    /* ════════════════════════════════════════════════
+       LAYOUT
+    ════════════════════════════════════════════════ */
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding-left: var(--pad-x);
+      padding-right: var(--pad-x);
+    }
+
+    /* ════════════════════════════════════════════════
+       BUTTON SYSTEM — same pill shape, snappy 0.1s
+    ════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      width: fit-content;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 0;
+      cursor: pointer;
+      font-family: var(--f-ui);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+      transition: background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    }
+    .btn-arrow { display: inline-block; transition: transform 0.1s ease; }
+    .btn:hover .btn-arrow { transform: translateX(5px); }
+
+    .btn--primary     { background: var(--ink); color: var(--white); border: 1px solid var(--ink); }
+    .btn--primary:hover { background: var(--ink-70); border-color: var(--ink-70); }
+
+    .btn--primary-inv { background: var(--white); color: var(--ink); border: 1px solid var(--white); }
+    .btn--primary-inv:hover { background: transparent; color: var(--white); }
+
+    .btn--primary-orange { background: var(--orange); color: var(--white); border: 1px solid var(--orange); }
+    .btn--primary-orange:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+
+    .btn--secondary   { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+    .btn--secondary:hover { background: var(--ink); color: var(--white); }
+
+    .btn--secondary-inv { background: transparent; color: var(--white); border: 1px solid var(--white); }
+    .btn--secondary-inv:hover { border-color: var(--orange); color: var(--orange); }
+
+    .btn--tertiary-inv { background: transparent; color: var(--white); border: 1px solid transparent; padding-left: 0; }
+    .btn--tertiary-inv:hover { color: var(--orange); }
+
+    /* ════════════════════════════════════════════════
+       REVEAL ANIMATIONS — snappy, direct
+    ════════════════════════════════════════════════ */
+    .reveal     { opacity: 0; transform: translateY(16px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .reveal.in  { opacity: 1; transform: none; }
+    .reveal-d1  { transition-delay: 0.06s; }
+    .reveal-d2  { transition-delay: 0.12s; }
+    .reveal-d3  { transition-delay: 0.18s; }
+
+    /* ════════════════════════════════════════════════
+       NAVIGATION
+    ════════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--ink);
+      transition: background 0.1s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+    .nav__logo { flex-shrink: 0; }
+    .nav__logo-img { height: 30px; }
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex: 1;
+    }
+    .nav__link {
+      font-size: 15px;
+      color: var(--ink);
+      transition: color 0.1s;
+    }
+    .nav__link:hover, .nav__link.active { color: var(--orange); }
+    .nav__cta { margin-left: auto; flex-shrink: 0; }
+
+    /* Hamburger */
+    .nav__burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      margin-left: auto;
+      padding: 6px;
+    }
+    .nav__burger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--ink);
+      transition: all 0.1s;
+    }
+
+    /* Mobile nav drawer */
+    .nav__drawer {
+      display: none;
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--ink);
+      padding: 24px var(--pad-x);
+      flex-direction: column;
+      gap: 20px;
+      z-index: 99;
+    }
+    .nav__drawer.open { display: flex; }
+    .nav__drawer .nav__link { font-size: 18px; }
+
+    /* ════════════════════════════════════════════════
+       SECTION CHROME — number + rule system
+    ════════════════════════════════════════════════ */
+    .s-rule {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      border-bottom: 1px solid currentColor;
+      margin-bottom: 72px;
+      opacity: 0.9;
+    }
+    .s-rule--light  { color: var(--ink); }
+    .s-rule--dim    { border-bottom-color: var(--neutral-200); color: var(--ink); }
+    .s-rule--inv    { color: rgba(255,255,255,0.35); }
+    .s-rule--green  { color: var(--green-500); }
+    .s-rule--orange { color: rgba(0,0,0,0.2); }
+
+    .s-num {
+      font-family: var(--f-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section--ink   .s-num { color: rgba(255,255,255,0.35); }
+    .section--green .s-num { color: var(--green-400); }
+    .section--orange .s-num { color: rgba(0,0,0,0.45); }
+
+    .s-tag {
+      font-family: var(--f-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section--ink   .s-tag { color: rgba(255,255,255,0.35); }
+    .section--green .s-tag { color: var(--green-400); }
+    .section--orange .s-tag { color: rgba(0,0,0,0.45); }
+
+    /* ════════════════════════════════════════════════
+       SECTION BACKGROUNDS
+    ════════════════════════════════════════════════ */
+    .section        { padding: var(--sec-py) 0; }
+    .section--surf  { background: var(--neutral-50); }
+    .section--ink   { background: var(--ink); color: var(--white); }
+    .section--green { background: var(--green-900); color: var(--white); }
+    .section--orange{ background: var(--orange); color: var(--ink); }
+
+    /* ════════════════════════════════════════════════
+       01 HERO
+    ════════════════════════════════════════════════ */
+    .hero {
+      padding-top: var(--nav-h);
+      border-bottom: 1px solid var(--ink);
+      background: var(--white);
+    }
+
+    .hero__eyebrow-bar {
+      border-bottom: 1px solid var(--ink);
+      padding: 14px var(--pad-x);
+      max-width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hero__eyebrow-bar .s-num { color: var(--muted); }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--ink);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .hero__badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(50vh - var(--nav-h));
+    }
+
+    /* Left column */
+    .hero__left {
+      padding: 56px var(--pad-x) 64px;
+      border-right: 1px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0;
+    }
+
+    .hero__tagline {
+      font-family: var(--f-display);
+      font-size: 88px;
+      font-weight: 500;
+      line-height: 0.92;
+      letter-spacing: -4px;
+    }
+    .hero__tagline em {
+      font-style: italic;
+    }
+
+    .hero__meta {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: end;
+      padding-top: 48px;
+      border-top: 1px solid var(--neutral-200);
+      margin-top: 48px;
+    }
+    .hero__heading-block h2 {
+      font-family: var(--f-ui);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .hero__body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--mid);
+      max-width: 380px;
+    }
+
+    /* Right column */
+    .hero__right {
+      background: var(--neutral-50);
+      display: flex;
+      align-items: stretch;
+    }
+    .hero__video-frame {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero__video-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero__video-label {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.4);
+      padding: 6px 12px;
+    }
+
+    /* ════════════════════════════════════════════════
+       02 WHO WE ARE
+    ════════════════════════════════════════════════ */
+    .who__grid {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 0;
+      border: 1px solid var(--ink);
+    }
+    .who__left {
+      padding: 64px 48px;
+      border-right: 1px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .who__eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+      display: block;
+    }
+    .who__heading {
+      font-family: var(--f-display);
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 0.92;
+      letter-spacing: -4px;
+    }
+    .who__heading em { font-style: italic; color: var(--orange); }
+    .who__video-wrap {
+      margin-top: 40px;
+      border: 1px solid var(--neutral-200);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .who__video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .who__right {
+      padding: 64px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+      
+    }
+    .who__right p { font-size: 18px; line-height: 1.7; color: var(--mid); }
+    .who__right p strong { color: var(--ink); font-weight: 600; }
+
+    /* ════════════════════════════════════════════════
+       03 AI ENGINEERING
+    ════════════════════════════════════════════════ */
+    .ai-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 56px;
+    }
+    .ai-intro p { font-size: 18px; line-height: 1.7; color: var(--mid); align-self: end; }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--ink);
+    }
+    .ai-card {
+      padding: 40px 28px 36px;
+      border-right: 1px solid var(--ink);
+      transition: background 0.1s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .ai-card:last-child { border-right: none; }
+    .ai-card:hover { background: var(--orange-light); }
+
+    .ai-card__num {
+      font-family: var(--f-display);
+      font-size: 56px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--neutral-200);
+      margin-bottom: 28px;
+      transition: color 0.1s;
+    }
+    .ai-card:hover .ai-card__num { color: var(--orange); }
+
+    .ai-card__media {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      margin-bottom: 28px;
+      border: 1px solid var(--neutral-200);
+      flex-shrink: 0;
+    }
+    .ai-card__media video {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    .ai-card__title {
+      font-family: var(--f-display);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      flex-grow: 1;
+    }
+    .ai-card__body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--mid);
+    }
+
+    /* ════════════════════════════════════════════════
+       04 SERVICES
+    ════════════════════════════════════════════════ */
+    .svc-intro-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 56px;
+      align-items: end;
+    }
+    .svc-intro-row p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--neutral-800);
+    }
+    .svc-card {
+      padding: 40px 32px;
+      border-right: 1px solid var(--neutral-800);
+      border-bottom: 1px solid var(--neutral-800);
+      transition: background 0.1s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .svc-card:nth-child(3n) { border-right: none; }
+    .svc-card:nth-last-child(-n+3) { border-bottom: none; }
+    .svc-card:hover { background: rgba(255,255,255,0.04); }
+    .svc-card:hover .svc-img-wrap { opacity: 0.15; }
+
+    .svc-card__num {
+      font-family: var(--f-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 28px;
+    }
+    .svc-img-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      margin-bottom: 24px;
+      opacity: 0.6;
+      transition: opacity 0.1s;
+    }
+    .svc-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .svc-card__title {
+      font-family: var(--f-display);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -1px;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .svc-card__body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.45);
+      flex-grow: 1;
+    }
+
+    /* ════════════════════════════════════════════════
+       05 CASE STUDIES
+    ════════════════════════════════════════════════ */
+    .cs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--ink);
+    }
+    .cs-card {
+      padding: 60px 48px;
+      border-right: 1px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: background 0.1s;
+    }
+    .cs-card:last-child { border-right: none; }
+    .cs-card:hover { background: var(--neutral-50); }
+
+    .cs-card__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .cs-card__stat {
+      font-family: var(--f-display);
+      font-size: 88px;
+      font-weight: 500;
+      line-height: 0.9;
+      letter-spacing: -4px;
+      color: var(--orange);
+      margin-bottom: 28px;
+    }
+    .cs-card__body {
+      font-family: var(--f-display);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      color: var(--ink);
+      flex-grow: 1;
+      margin-bottom: 40px;
+    }
+
+    /* ════════════════════════════════════════════════
+       06 PARTNERS
+    ════════════════════════════════════════════════ */
+    .partner-row {
+      display: flex;
+      border: 1px solid var(--ink);
+    }
+    .partner-cell {
+      flex: 1;
+      border-right: 1px solid var(--ink);
+      padding: 36px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s;
+    }
+    .partner-cell:last-child { border-right: none; }
+    .partner-cell:hover { background: var(--orange-light); }
+    .partner-cell img {
+      height: 36px;
+      object-fit: contain;
+      filter: grayscale(1);
+      opacity: 0.5;
+      transition: filter 0.1s, opacity 0.1s;
+    }
+    .partner-cell:hover img { filter: none; opacity: 1; }
+
+    /* ════════════════════════════════════════════════
+       07 CLIENTS
+    ════════════════════════════════════════════════ */
+    .client-marquee-outer {
+      border: 1px solid var(--ink);
+      overflow: hidden;
+      position: relative;
+    }
+    .client-marquee-outer::before,
+    .client-marquee-outer::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 100px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .client-marquee-outer::before { left: 0; background: linear-gradient(to right, var(--white), transparent); }
+    .client-marquee-outer::after  { right: 0; background: linear-gradient(to left, var(--white), transparent); }
+
+    .client-marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .client-marquee-outer:hover .client-marquee-track { animation-play-state: paused; }
+
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .c-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 32px;
+      border-right: 1px solid var(--neutral-200);
+      width: 160px;
+      flex-shrink: 0;
+    }
+    .c-pill img {
+      height: 26px;
+      object-fit: contain;
+      filter: grayscale(1);
+      opacity: 0.45;
+    }
+
+    /* ════════════════════════════════════════════════
+       08 METRICS
+    ════════════════════════════════════════════════ */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--ink);
+    }
+    .metric-cell {
+      padding: 52px 40px;
+      border-right: 1px solid var(--ink);
+      
+      transition: background 0.1s;
+    }
+    .metric-cell:last-child { border-right: none; }
+    .metric-cell:hover { background: var(--neutral-50); }
+    .metric-cell:hover .metric-val { color: var(--green-700); }
+
+    .metric-val {
+      font-family: var(--f-display);
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -4px;
+      color: var(--ink);
+      transition: color 0.1s;
+      margin-bottom: 14px;
+    }
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════════════════
+       09 COMMUNITY
+    ════════════════════════════════════════════════ */
+    .comm-intro {
+      margin-bottom: 56px;
+    }
+    .comm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--green-700);
+    }
+    .comm-card {
+      padding: 60px 40px;
+      border-right: 1px solid var(--green-700);
+      
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: background 0.1s;
+    }
+    .comm-card:last-child { border-right: none; }
+    .comm-card:hover { background: rgba(255,255,255,0.04); }
+
+    .comm-card__icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 28px;
+      opacity: 0.9;
+      flex-shrink: 0;
+    }
+    .comm-card__icon img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
+
+    .comm-card__title {
+      font-family: var(--f-display);
+      font-size: 44px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .comm-card__body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.58);
+      flex-grow: 1;
+      margin-bottom: 32px;
+    }
+    .comm-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--green-400);
+      transition: color 0.1s;
+    }
+    .comm-card__link:hover { color: var(--white); }
+    .comm-card__link:hover .btn-arrow { transform: translateX(4px); }
+
+    /* ════════════════════════════════════════════════
+       10 JOIN US
+    ════════════════════════════════════════════════ */
+    .join-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid rgba(0,0,0,0.25);
+    }
+    .join-left {
+      padding: 72px 56px;
+      border-right: 1px solid rgba(0,0,0,0.2);
+    }
+    .join-left h2 {
+      font-family: var(--f-display);
+      font-size: 96px;
+      font-weight: 500;
+      line-height: 0.9;
+      letter-spacing: -5px;
+      color: var(--ink);
+    }
+    .join-left h2 em { font-style: italic; color: rgba(0,0,0,0.5); }
+
+    .join-right {
+      padding: 72px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+    }
+    .join-right p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+
+    /* ════════════════════════════════════════════════
+       11 CONNECT
+    ════════════════════════════════════════════════ */
+    .connect-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 44px;
+    }
+    .connect-inner h2 {
+      font-family: var(--f-display);
+      font-size: 72px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -3px;
+      color: var(--white);
+    }
+    .connect-inner h2 em { font-style: italic; color: var(--orange); }
+    .connect-email {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-top: -20px;
+    }
+
+    /* ════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════ */
+    .footer {
+      background: var(--ink);
+      border-top: 1px solid var(--neutral-800);
+    }
+    .footer__main {
+      padding: 72px var(--pad-x) 48px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(5, 1fr);
+      gap: 40px;
+    }
+    .footer__brand p {
+      font-size: 13px;
+      color: var(--neutral-500);
+      line-height: 1.65;
+      margin-top: 16px;
+      max-width: 180px;
+    }
+    .footer__logo-img { height: 26px; }
+
+    .footer__col-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .footer__links { display: flex; flex-direction: column; gap: 10px; }
+    .footer__link {
+      font-size: 14px;
+      color: var(--neutral-500);
+      transition: color 0.1s;
+    }
+    .footer__link:hover { color: var(--white); }
+
+    .footer__bottom {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 24px var(--pad-x);
+      border-top: 1px solid var(--neutral-800);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .footer__legal { font-size: 13px; color: var(--neutral-500); }
+    .footer__legal-links { display: flex; gap: 28px; }
+    .footer__legal-link { font-size: 13px; color: var(--neutral-500); transition: color 0.1s; }
+    .footer__legal-link:hover { color: var(--white); }
+
+    /* ════════════════════════════════════════════════
+       MOBILE — ≤768px
+    ════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      :root { --pad-x: 24px; --sec-py: 64px; }
+
+      .nav__links, .nav__cta { display: none; }
+      .nav__burger { display: flex; }
+
+      /* Hero */
+      .hero__grid { grid-template-columns: 1fr; min-height: auto; }
+      .hero__left { padding: 40px var(--pad-x) 48px; border-right: none; }
+      .hero__tagline { font-size: 58px; letter-spacing: -2.5px; }
+      .hero__meta { grid-template-columns: 1fr; gap: 24px; }
+      .hero__right { min-height: 260px; }
+
+      /* Who */
+      .who__grid { grid-template-columns: 1fr; }
+      .who__left { border-right: none; border-bottom: 1px solid var(--ink); padding: 48px var(--pad-x); }
+      .who__heading { font-size: 56px; }
+      .who__right { border-left: none;  padding: 40px var(--pad-x); }
+
+      /* AI Eng */
+      .ai-intro { grid-template-columns: 1fr; gap: 20px; }
+      .ai-grid { grid-template-columns: 1fr 1fr; }
+      .ai-card { border-bottom: 1px solid var(--ink); }
+      .ai-card:nth-child(even) { border-right: none; }
+      .ai-card:nth-last-child(-n+2) { border-bottom: none; }
+
+      /* Services */
+      .svc-intro-row { grid-template-columns: 1fr; gap: 16px; }
+      .svc-grid { grid-template-columns: 1fr; }
+      .svc-card:nth-child(3n) { border-right: none; }
+      .svc-card:nth-last-child(-n+3) { border-bottom: 1px solid var(--neutral-800); }
+      .svc-card:last-child { border-bottom: none; }
+
+      /* Case studies */
+      .cs-grid { grid-template-columns: 1fr; }
+      .cs-card { border-right: none; border-bottom: 1px solid var(--ink); }
+      .cs-card:last-child { border-bottom: none; }
+
+      /* Partners */
+      .partner-row { flex-wrap: wrap; }
+      .partner-cell { width: calc(50% - 1px); flex: none; border-bottom: 1px solid var(--ink); }
+      .partner-cell:nth-child(even) { border-right: none; }
+
+      /* Metrics */
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .metric-cell:nth-child(even) { border-right: none; }
+      .metric-cell:nth-child(1),
+      .metric-cell:nth-child(2) { border-bottom: 1px solid var(--ink); }
+      .metric-val { font-size: 60px; }
+
+      /* Community */
+      .comm-grid { grid-template-columns: 1fr; }
+      .comm-card { border-right: none; border-bottom: 1px solid var(--green-700); }
+      .comm-card:last-child { border-bottom: none; }
+
+      /* Join */
+      .join-grid { grid-template-columns: 1fr; }
+      .join-left { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.2); padding: 56px var(--pad-x); }
+      .join-left h2 { font-size: 72px; }
+      .join-right { padding: 48px var(--pad-x); }
+
+      /* Connect */
+      .connect-inner h2 { font-size: 48px; }
+
+      /* Footer */
+      .footer__main { grid-template-columns: 1fr 1fr; }
+      .footer__brand { grid-column: 1 / -1; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; gap: 16px; }
+
+      /* Section rule */
+      .s-rule { margin-bottom: 48px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero__tagline { font-size: 46px; letter-spacing: -2px; }
+      .who__heading { font-size: 48px; }
+      .metric-val { font-size: 52px; }
+      .ai-grid { grid-template-columns: 1fr; }
+      .ai-card { border-right: none !important; }
+      .join-left h2 { font-size: 56px; }
+      .connect-inner h2 { font-size: 40px; }
+      .footer__main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════════════ -->
+  <nav class="nav" id="site-nav" role="navigation" aria-label="Main">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">
+        <img src="Assets/images/feuji-orange-logo.png" alt="Feuji" class="nav__logo-img" />
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="#" class="nav__link">Applied AI</a></li>
+        <li><a href="#services" class="nav__link">Services</a></li>
+        <li><a href="#" class="nav__link">Industries</a></li>
+        <li><a href="#community" class="nav__link">Community</a></li>
+        <li><a href="#" class="nav__link">Insights</a></li>
+        <li><a href="#about" class="nav__link">Who we are</a></li>
+      </ul>
+      <a href="#connect" class="btn btn--primary-orange t-btn nav__cta">
+        Let's connect <span class="btn-arrow">→</span>
+      </a>
+      <button class="nav__burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav__drawer" id="nav-drawer" role="menu">
+      <a href="#" class="nav__link" role="menuitem">Applied AI</a>
+      <a href="#services" class="nav__link" role="menuitem">Services</a>
+      <a href="#" class="nav__link" role="menuitem">Industries</a>
+      <a href="#community" class="nav__link" role="menuitem">Community</a>
+      <a href="#" class="nav__link" role="menuitem">Insights</a>
+      <a href="#about" class="nav__link" role="menuitem">Who we are</a>
+      <a href="#connect" class="btn btn--primary-orange t-btn" style="align-self:flex-start; margin-top: 8px;">
+        Let's connect <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════
+       01 — HERO
+  ════════════════════════════════════════════════ -->
+  <section id="hero" class="hero" aria-label="Hero">
+    <div class="hero__grid">
+      <!-- Left: type + meta -->
+      <div class="hero__left">
+        <h1 class="hero__tagline"><em>Applied AI</em><br>Engineering</h1>
+
+        <div class="hero__meta">
+          <div class="hero__heading-block">
+            <p class="hero__body">Building production-grade AI systems that solve real, meaningful business problems.</p>
+          </div>
+          <div>
+            <a href="#connect" class="btn btn--primary t-btn">
+              Ask us how <span class="btn-arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: video -->
+      <div class="hero__right">
+        <div class="hero__video-frame">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="Assets/images/banner-video.mp4" type="video/mp4" />
+          </video>
+          <span class="hero__video-label">Applied AI · Engineering</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       02 — WHO WE ARE
+  ════════════════════════════════════════════════ -->
+  <section id="about" class="section" aria-labelledby="about-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--dim reveal">
+        <span class="s-num">02 — Who we are</span>
+        <span class="s-tag">Feuji</span>
+      </div>
+    </div>
+
+    <div style="max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x);">
+      <div class="who__grid reveal">
+        <div class="who__left">
+          <div>
+            <span class="who__eyebrow">Who we are</span>
+            <h2 id="about-heading" class="who__heading">We<br>are<br><em>Feuji</em></h2>
+          </div>
+          <div class="who__video-wrap">
+            <video autoplay muted loop playsinline preload="auto">
+              <source src="Assets/images/hf_20260303_071415_7a7d4099-8c41-47e9-b050-3c4aae423622.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+        <div class="who__right">
+          <p>Enterprises are investing in AI, yet outcomes remain limited. Efforts stall in pilots, systems stay disconnected, and value is hard to measure. <strong>The gap is not ambition. It is execution.</strong></p>
+          <p>At Feuji, we close this gap through applied AI engineering. We design, build, and run production-grade systems that embed AI into core workflows.</p>
+          <p>This delivers faster decisions, lower operational cost, and measurable business impact at scale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       03 — AI ENGINEERING
+  ════════════════════════════════════════════════ -->
+  <section id="ai-engineering" class="section section--surf" aria-labelledby="ai-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--light reveal">
+        <span class="s-num">03 — Applied AI</span>
+        <span class="s-tag">Engineering</span>
+      </div>
+
+      <div class="ai-intro reveal">
+        <h2 id="ai-heading" class="t-h2">Engineering AI<br><em>for outcomes</em></h2>
+        <p>From idea to production, we help you build and deliver real world impact.</p>
+      </div>
+
+      <div class="ai-grid reveal">
+        <div class="ai-card">
+          <div class="ai-card__num">01</div>
+          <div class="ai-card__media">
+            <video autoplay muted loop playsinline preload="none">
+              <source src="Assets/images/ai-engineering/gettyimages-2188313395-640_adpp.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <h3 class="ai-card__title">Feuji AI Labs</h3>
+          <p class="ai-card__body">Rapidly build and validate AI use cases ready for real-world deployment.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card__num">02</div>
+          <div class="ai-card__media">
+            <video autoplay muted loop playsinline preload="none">
+              <source src="Assets/images/ai-engineering/gettyimages-2151855243-640_adpp.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <h3 class="ai-card__title">AI &amp; ML Solutions</h3>
+          <p class="ai-card__body">Production-grade AI systems that improve cost, speed, and decision-making.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card__num">03</div>
+          <div class="ai-card__media">
+            <video autoplay muted loop playsinline preload="none">
+              <source src="Assets/images/ai-engineering/gettyimages-2182400108-640_adpp.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <h3 class="ai-card__title">AI Innovation Suite</h3>
+          <p class="ai-card__body">Pre-built AI components that accelerate deployment and reduce risk.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card__num">04</div>
+          <div class="ai-card__media">
+            <video autoplay muted loop playsinline preload="none">
+              <source src="Assets/images/ai-engineering/gettyimages-1415599817-640_adpp.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <h3 class="ai-card__title">AI Partnership Ecosystem</h3>
+          <p class="ai-card__body">Strategic integrations that scale AI performance across platforms and workflows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       04 — SERVICES
+  ════════════════════════════════════════════════ -->
+  <section id="services" class="section section--ink" aria-labelledby="svc-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--inv reveal">
+        <span class="s-num">04 — Services</span>
+        <span class="s-tag">What we do</span>
+      </div>
+
+      <div class="svc-intro-row reveal">
+        <h2 id="svc-heading" class="t-h2" style="color:var(--white);">Accelerate to <em>value</em><br>with our services</h2>
+        <p>We help build core capabilities that design, build, and run modern digital systems.</p>
+      </div>
+
+      <div class="svc-grid reveal">
+        <div class="svc-card">
+          <div class="svc-card__num">01</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Consulting.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Consulting</h3>
+          <p class="svc-card__body">Translate business priorities into clear technology and execution roadmaps.</p>
+        </div>
+        <div class="svc-card">
+          <div class="svc-card__num">02</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Cloud-Solutions.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Cloud Solutions</h3>
+          <p class="svc-card__body">Build scalable, resilient cloud environments optimized for performance and cost.</p>
+        </div>
+        <div class="svc-card">
+          <div class="svc-card__num">03</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Digital-Engineering.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Digital Engineering</h3>
+          <p class="svc-card__body">Design and develop high-quality applications built for speed and scale.</p>
+        </div>
+        <div class="svc-card">
+          <div class="svc-card__num">04</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Data-and-Insights.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Data and Insights</h3>
+          <p class="svc-card__body">Turn data into actionable intelligence that improves decisions and outcomes.</p>
+        </div>
+        <div class="svc-card">
+          <div class="svc-card__num">05</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Cybersecurity.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Cybersecurity</h3>
+          <p class="svc-card__body">Protect systems and data with built-in security across the digital stack.</p>
+        </div>
+        <div class="svc-card">
+          <div class="svc-card__num">06</div>
+          <div class="svc-img-wrap">
+            <img src="Assets/images/home-services-v002/Managed-Services.png" alt="" />
+          </div>
+          <h3 class="svc-card__title">Managed Services</h3>
+          <p class="svc-card__body">Operate and optimize systems continuously to ensure reliability and efficiency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       05 — CASE STUDIES
+  ════════════════════════════════════════════════ -->
+  <section id="case-studies" class="section" aria-labelledby="cs-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--light reveal">
+        <span class="s-num">05 — Case Studies</span>
+        <span class="s-tag">Outcomes</span>
+      </div>
+
+      <div class="reveal" style="margin-bottom: 48px;">
+        <h2 id="cs-heading" class="t-h2">Delivering outcomes<br><em>that matter to you</em></h2>
+      </div>
+
+      <div class="cs-grid reveal">
+        <article class="cs-card" tabindex="0">
+          <p class="cs-card__label">Case Study</p>
+          <div class="cs-card__stat">50%</div>
+          <p class="cs-card__body">How did we achieve a 50% reduction in migration time to Snowflake for a billion-dollar data analytics company?</p>
+          <a href="#" class="btn btn--secondary t-btn">
+            Discover now <span class="btn-arrow">→</span>
+          </a>
+        </article>
+        <article class="cs-card" tabindex="0">
+          <p class="cs-card__label">Case Study</p>
+          <div class="cs-card__stat">$120M</div>
+          <p class="cs-card__body">How did we streamline processes and reduce costs for a $120M online ticketing platform?</p>
+          <a href="#" class="btn btn--secondary t-btn">
+            Discover now <span class="btn-arrow">→</span>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       06 — CLIENTS
+  ════════════════════════════════════════════════ -->
+  <section id="clients" class="section" aria-labelledby="clients-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--dim reveal">
+        <span class="s-num">07 — Clients</span>
+        <span class="s-tag">Trust</span>
+      </div>
+      <div class="reveal" style="margin-bottom: 48px;">
+        <h2 id="clients-heading" class="t-h2">Building <em>trust</em> through<br>deep partnerships</h2>
+      </div>
+    </div>
+
+    <div style="max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x);">
+      <div class="client-marquee-outer reveal" aria-label="Client logos">
+        <div class="client-marquee-track">
+          <!-- set 1 -->
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/agco-logo.png" alt="AGCO" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/bankunited-logo.png" alt="BankUnited" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/cotiviti-logo.png" alt="Cotiviti" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/dxc-logo.png" alt="DXC Technology" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/gsk-logo.png" alt="GSK" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/hewlett-packard-logo.png" alt="HP Enterprise" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/haleon-logo.png" alt="Haleon" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/microfocus-logo.png" alt="Micro Focus" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/nagase-logo.png" alt="Nagase America" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/plzgroup-logo.png" alt="PLZ" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/rygen-logo.png" alt="Rygen" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/trinet-logo.png" alt="TriNet" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/encore-logo.png" alt="Encore" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/leaselock-logo.png" alt="LeaseLock" /></div>
+          <div class="c-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/ontrac-logo.png" alt="OnTrac" /></div>
+          <!-- set 2 — aria-hidden duplicate for seamless loop -->
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/agco-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/bankunited-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/cotiviti-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/dxc-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/gsk-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/hewlett-packard-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/haleon-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/microfocus-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/nagase-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/plzgroup-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/rygen-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/trinet-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/encore-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/leaselock-logo.png" alt="" /></div>
+          <div class="c-pill" aria-hidden="true"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/ontrac-logo.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       07 — COMMUNITY
+  ════════════════════════════════════════════════ -->
+  <section id="community" class="section section--green" aria-labelledby="community-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--green reveal">
+        <span class="s-num">09 — Community</span>
+        <span class="s-tag">Investing in people</span>
+      </div>
+
+      <div class="comm-intro reveal">
+        <h2 id="community-heading" class="t-h2" style="color:var(--white);">
+          Investing in communities<br>to drive <em>inclusive growth</em>
+        </h2>
+      </div>
+
+      <div class="comm-grid reveal">
+        <div class="comm-card">
+          <div class="comm-card__icon">
+            <img src="Assets/icons/icon-smart-village.svg" alt="" />
+          </div>
+          <h3 class="comm-card__title">Smart Village</h3>
+          <p class="comm-card__body">We partner with rural communities to bring digital infrastructure, connectivity, and technology-enabled services that improve livelihoods and create new economic opportunities at the grassroots level.</p>
+          <a href="#" class="comm-card__link">
+            Learn more <span class="btn-arrow">→</span>
+          </a>
+        </div>
+        <div class="comm-card">
+          <div class="comm-card__icon">
+            <img src="Assets/icons/icon-education.svg" alt="" />
+          </div>
+          <h3 class="comm-card__title">Education</h3>
+          <p class="comm-card__body">Through scholarships, mentorship programmes, and skills training, we invest in the next generation of technology talent — expanding access to quality education and building capability in underserved communities.</p>
+          <a href="#" class="comm-card__link">
+            Learn more <span class="btn-arrow">→</span>
+          </a>
+        </div>
+        <div class="comm-card">
+          <div class="comm-card__icon">
+            <img src="Assets/icons/icon-sustainability.svg" alt="" />
+          </div>
+          <h3 class="comm-card__title">Sustainability</h3>
+          <p class="comm-card__body">We embed sustainable practices into how we operate and how we build — reducing our environmental footprint, supporting green initiatives, and contributing to a more responsible technology industry.</p>
+          <a href="#" class="comm-card__link">
+            Learn more <span class="btn-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       10 — JOIN US
+  ════════════════════════════════════════════════ -->
+  <section id="careers" class="section section--orange" aria-labelledby="careers-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--orange reveal">
+        <span class="s-num">10 — Careers</span>
+        <span class="s-tag">Join the team</span>
+      </div>
+
+      <div class="join-grid reveal">
+        <div class="join-left">
+          <h2 id="careers-heading">Join<br><em>Us</em></h2>
+        </div>
+        <div class="join-right">
+          <p>We are building a team that solves real problems and delivers measurable impact. Join us to be a part of the exciting new future we are building for our customers, colleagues, and communities.</p>
+          <div>
+            <a href="#" class="btn btn--primary t-btn">
+              Explore opportunities <span class="btn-arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       11 — CONNECT
+  ════════════════════════════════════════════════ -->
+  <section id="connect" class="section section--ink" aria-labelledby="connect-heading">
+    <div class="wrap">
+      <div class="s-rule s-rule--inv reveal">
+        <span class="s-num">11 — Contact</span>
+        <span class="s-tag">Get in touch</span>
+      </div>
+
+      <div class="connect-inner reveal">
+        <h2 id="connect-heading">Ready for Applied AI<br><em>Engineering?</em></h2>
+        <a href="mailto:hello@feuji.com" class="btn btn--secondary-inv t-btn">
+          Let's connect <span class="btn-arrow">→</span>
+        </a>
+        <p class="connect-email">hello@feuji.com</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__main">
+      <div class="footer__brand">
+        <img src="Assets/images/feuji-orange-logo.png" alt="Feuji" class="footer__logo-img" />
+        <p>Applied AI Engineering for real-world outcomes.</p>
+      </div>
+      <div>
+        <div class="footer__col-title">Applied AI</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Feuji AI Labs</a></li>
+          <li><a href="#" class="footer__link">AI &amp; ML Solutions</a></li>
+          <li><a href="#" class="footer__link">AI Innovation Suite</a></li>
+          <li><a href="#" class="footer__link">AI Partnership Ecosystem</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Services</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Consulting</a></li>
+          <li><a href="#" class="footer__link">Cloud Solutions</a></li>
+          <li><a href="#" class="footer__link">Digital Engineering</a></li>
+          <li><a href="#" class="footer__link">Data and Insights</a></li>
+          <li><a href="#" class="footer__link">Cybersecurity</a></li>
+          <li><a href="#" class="footer__link">Managed Services</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Industries</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Healthcare</a></li>
+          <li><a href="#" class="footer__link">Insurance</a></li>
+          <li><a href="#" class="footer__link">Pharma</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Community</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Smart Village</a></li>
+          <li><a href="#" class="footer__link">Education &amp; Training</a></li>
+          <li><a href="#" class="footer__link">Sustainability</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Who we are</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Our Story</a></li>
+          <li><a href="#" class="footer__link">People</a></li>
+          <li><a href="#" class="footer__link">Partners</a></li>
+          <li><a href="#" class="footer__link">Leadership</a></li>
+          <li><a href="#" class="footer__link">Careers</a></li>
+          <li><a href="#" class="footer__link">Locations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__legal">© 2025 Feuji. All rights reserved.</p>
+      <div class="footer__legal-links">
+        <a href="#" class="footer__legal-link">Privacy Policy</a>
+        <a href="#" class="footer__legal-link">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════════════ -->
+  <script>
+    /* Nav: scroll state */
+    const nav = document.getElementById('site-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 80);
+    }, { passive: true });
+
+    /* Nav: mobile burger */
+    const burger = document.getElementById('nav-burger');
+    const drawer = document.getElementById('nav-drawer');
+    burger.addEventListener('click', () => {
+      const open = drawer.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open);
+    });
+    drawer.addEventListener('click', e => {
+      if (e.target.tagName === 'A') drawer.classList.remove('open');
+    });
+
+    /* Reveal on scroll */
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+    reveals.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
