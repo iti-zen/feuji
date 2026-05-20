@@ -676,18 +676,7 @@
     .about__img {
       border-radius: 16px;
       overflow: hidden;
-      clip-path: inset(50px 0 70px 0 round 16px);
       aspect-ratio: 4 / 3;
-    }
-
-    .about__video {
-      width: 120%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      border-radius: 16px;
-      transform: translateX(-60px) scale(0.7);
-      transform-origin: center center;
     }
 
     /* ─────────────────────────────────────────
@@ -2650,10 +2639,7 @@
       gap: 40px;
       padding-top: var(--sec-py) !important;
     }
-    .about__img {
-      clip-path: inset(40px 0 60px 0 round 16px) !important;
-      aspect-ratio: 4 / 3 !important;
-    }
+    .about__img { aspect-ratio: 4 / 3 !important; }
 
     /* ── Services ── */
     .section-header { grid-template-columns: 1fr !important; gap: 16px; }
@@ -2880,9 +2866,7 @@
       </div>
 
       <div class="about__img reveal reveal-d2">
-        <video class="about__video" autoplay muted loop playsinline preload="auto">
-          <source src="Assets/gif/Feuji%20banner%20video%201.mp4" type="video/mp4">
-        </video>
+        <img src="Assets/images/home-intro-v002.png" alt="We are Feuji" style="width:100%;height:100%;object-fit:cover;display:block;">
       </div>
 
     </div>
