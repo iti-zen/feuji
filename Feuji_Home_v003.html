@@ -862,23 +862,28 @@
     ───────────────────────────────────────── */
     .svc-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid var(--border);
-      border-left: 1px solid var(--border);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
     }
 
     .svc-card {
       position: relative;
       padding: 48px 40px 40px;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
       background: var(--white);
       overflow: hidden;
-      transition: background 0.3s var(--ease);
+      transition: background 0.3s var(--ease), box-shadow 0.3s var(--ease);
       cursor: default;
+    }
+
+    /* Last two cards each span 2 cols → balanced bottom row */
+    .svc-card:nth-child(9),
+    .svc-card:nth-child(10) {
+      grid-column: span 2;
     }
 
     .svc-card::before {
@@ -887,10 +892,14 @@
       top: 0; left: 0;
       height: 2px; width: 0;
       background: var(--orange);
-      transition: width 0.35s var(--ease);
+      transition: width 0.4s var(--ease);
+      border-radius: 20px 20px 0 0;
     }
     .svc-card:hover::before { width: 100%; }
-    .svc-card:hover { background: var(--neutral-50); }
+    .svc-card:hover {
+      background: var(--neutral-50);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+    }
 
     .svc-card__top {
       display: flex;
@@ -954,7 +963,11 @@
     .svc-card__link .btn-arrow { transition: transform 0.2s var(--ease); }
     .svc-card__link:hover .btn-arrow { transform: translateX(4px); }
 
-    @media (max-width: 1024px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 1024px) {
+      .svc-grid { grid-template-columns: repeat(2, 1fr); }
+      .svc-card:nth-child(9),
+      .svc-card:nth-child(10) { grid-column: span 1; }
+    }
     @media (max-width: 640px) {
       .svc-grid { grid-template-columns: 1fr; }
       .svc-card { padding: 32px 24px; }
@@ -2914,6 +2927,58 @@
           </div>
           <h3 class="svc-card__title">Managed Services</h3>
           <p class="svc-card__body">Operate and optimize systems continuously to ensure reliability and efficiency.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 07 AI & Automation -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">07</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2a2 2 0 012 2v2a2 2 0 01-2 2 2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M12 16a2 2 0 012 2v2a2 2 0 01-2 2 2 2 0 01-2-2v-2a2 2 0 012-2z"/><path d="M2 12a2 2 0 012-2h2a2 2 0 012 2 2 2 0 01-2 2H4a2 2 0 01-2-2z"/><path d="M16 12a2 2 0 012-2h2a2 2 0 012 2 2 2 0 01-2 2h-2a2 2 0 01-2-2z"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">AI &amp; Automation</h3>
+          <p class="svc-card__body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula tortor vel libero dignissim.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 08 Quality Engineering -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">08</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Quality Engineering</h3>
+          <p class="svc-card__body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 09 Global Capability Centre -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">09</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Global Capability Centre</h3>
+          <p class="svc-card__body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 10 Talent & Workforce -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">10</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Talent &amp; Workforce</h3>
+          <p class="svc-card__body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
           <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
         </div>
 
