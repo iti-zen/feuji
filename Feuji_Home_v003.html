@@ -1,0 +1,4165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feuji — Applied AI Engineering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --f-display: 'Cormorant Garamond', Georgia, serif;
+      --f-ui:      'DM Sans', system-ui, sans-serif;
+
+      /* neutral palette */
+      --neutral-50:  #F9F9F9;
+      --neutral-100: #EAEAEA;
+      --neutral-200: #DFDFDF;
+      --neutral-300: #C1C1C1;
+      --neutral-400: #A2A2A2;
+      --neutral-500: #848484;
+      --neutral-700: #474747;
+      --neutral-800: #292929;
+      --ink:       #0A0A0A;
+      --ink-90:    #1A1A1A;
+      --ink-70:    #333333;
+      --mid:       #656565;
+      --muted:     #848484;
+      --border:    var(--neutral-200);
+      --border-dk: var(--neutral-800);
+      --surface:   var(--neutral-50);
+      --white:     #FFFFFF;
+
+      /* layout */
+      --nav-h:     80px;
+      --max-w:     1280px;
+      --pad-x:     80px;
+      --sec-py:    80px;
+      --gap:       32px;
+
+      /* easing */
+      --ease:     cubic-bezier(0.25,0.1,0.25,1);
+      --ease-out: cubic-bezier(0,0,0.2,1);
+    }
+
+    /* ─────────────────────────────────────────
+       RESET
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: var(--f-ui);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a   { text-decoration: none; color: inherit; }
+    ul  { list-style: none; }
+    img, svg { display: block; max-width: 100%; }
+    button { cursor: pointer; background: none; border: none; font-family: inherit; }
+
+    /* ─────────────────────────────────────────
+       TYPOGRAPHY — exact token values
+    ───────────────────────────────────────── */
+
+    /* Label S: DM Sans 600 12/13 +1px uppercase */
+    .t-label-s {
+      font-family: var(--f-ui);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Label M: DM Sans 600 14/15 +1px uppercase */
+    .t-label-m {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Display M: Cormorant 500 72/72 -3px */
+    .t-display-m {
+      font-family: var(--f-display);
+      font-size: 72px;
+      font-weight: 500;
+      line-height: 72px;
+      letter-spacing: -3px;
+    }
+
+    /* H2: Cormorant 500 64/64 -3px */
+    .t-h2 {
+      font-family: var(--f-display);
+      font-size: 64px;
+      font-weight: 500;
+      line-height: 64px;
+      letter-spacing: -3px;
+    }
+
+    /* H3: Cormorant 500 40/40 -2px */
+    .t-h3 {
+      font-family: var(--f-display);
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 40px;
+      letter-spacing: -2px;
+    }
+
+    /* H4: DM Sans 500 32/35 -1px */
+    .t-h4 {
+      font-family: var(--f-ui);
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 35px;
+      letter-spacing: -1px;
+    }
+
+    /* H5: DM Sans 500 24/29 -1px */
+    .t-h5 {
+      font-family: var(--f-ui);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 29px;
+      letter-spacing: -1px;
+    }
+
+    /* Body XL: DM Sans 400 20/28 -1px */
+    .t-body-xl {
+      font-family: var(--f-ui);
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 28px;
+      letter-spacing: -1px;
+    }
+
+    /* Body L: DM Sans 400 18/25 -1px */
+    .t-body-l {
+      font-family: var(--f-ui);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 25px;
+      letter-spacing: -1px;
+    }
+
+    /* Body M: DM Sans 400 16/24 0 */
+    .t-body-m {
+      font-family: var(--f-ui);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0;
+    }
+
+    /* Body S: DM Sans 400 14/21 0 */
+    .t-body-s {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: 0;
+    }
+
+    /* Stats L: Cormorant 500 80/80 -3px */
+    .t-stats-l {
+      font-family: var(--f-display);
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 80px;
+      letter-spacing: -3px;
+    }
+
+    /* Btn: DM Sans 400 16/18 0 */
+    .t-btn {
+      font-family: var(--f-ui);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: 0;
+    }
+
+    /* Nav: DM Sans 400 18/20 -1px */
+    .t-nav {
+      font-family: var(--f-ui);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -1px;
+    }
+
+    /* Legal: DM Sans 400 14/20 0 */
+    .t-legal {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: 0;
+    }
+
+    /* ─────────────────────────────────────────
+       LAYOUT HELPERS
+    ───────────────────────────────────────── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    .eyebrow {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .eyebrow--inv { color: rgba(255,255,255,0.45); }
+
+    /* ─────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease),
+                  border-color 0.2s var(--ease), transform 0.18s var(--ease);
+      font-family: var(--f-ui);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: 0;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+    .btn:hover .btn-arrow { transform: translateX(4px); }
+
+    /* Primary — dark fill, light BG */
+    .btn--primary {
+      background: var(--ink);
+      color: var(--white);
+      border-color: var(--ink);
+    }
+    .btn--primary:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    /* Primary Inverse — white fill, dark BG */
+    .btn--primary-inv {
+      background: var(--white);
+      color: var(--ink);
+      border-color: var(--white);
+    }
+    .btn--primary-inv:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    /* Primary Orange — orange fill, light BG */
+    .btn--primary-orange {
+      background: var(--orange);
+      color: var(--white);
+      border-color: var(--orange);
+      transition: background 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease);
+    }
+    .btn--primary-orange:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+    /* On dark hero/nav: primary-orange becomes white fill (primary on dark BG) */
+    .hero--dark-mode .btn--primary-orange,
+    .nav--dark .btn--primary-orange {
+      background: var(--white);
+      color: var(--ink);
+      border-color: var(--white);
+    }
+    .hero--dark-mode .btn--primary-orange:hover,
+    .nav--dark .btn--primary-orange:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--white);
+    }
+
+    /* Secondary — outline, light BG */
+    .btn--secondary {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+    .btn--secondary:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    /* Secondary Inverse — outline, dark BG */
+    .btn--secondary-inv {
+      background: transparent;
+      color: var(--white);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .btn--secondary-inv:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    /* Tertiary Inverse — text link, dark BG */
+    .btn--tertiary-inv {
+      padding: 0;
+      background: none;
+      border: none;
+      color: var(--white);
+      gap: 8px;
+      transition: color 0.22s var(--ease);
+      position: relative;
+      z-index: 1;
+    }
+    .btn--tertiary-inv:hover { color: var(--white); transform: none; }
+
+    /* ─────────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      transition: background 0.35s var(--ease), border-color 0.35s var(--ease),
+                  backdrop-filter 0.35s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.is-scrolled {
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+
+    .nav__inner {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .nav__logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav__logo-img {
+      height: 40px;
+      width: auto;
+      display: block;
+      transition: filter 0.3s var(--ease);
+    }
+
+    /* On dark hero: logo shows white; past hero: orange logo restores */
+    .nav--dark .nav__logo-img {
+      filter: brightness(0) invert(1);
+    }
+    .nav--light .nav__logo-img {
+      filter: none;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav__link {
+      font-family: var(--f-ui);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 20px;
+      letter-spacing: -0.3px;
+      position: relative;
+      transition: opacity 0.2s;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.22s var(--ease);
+    }
+    .nav__link:hover::after,
+    .nav__link.is-active::after { transform: scaleX(1); }
+
+    /* nav colours — default: on dark hero */
+    .nav--dark .nav__logo,
+    .nav--dark .nav__link { color: var(--white); }
+
+    .nav--light .nav__logo,
+    .nav--light .nav__link { color: var(--ink); }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Video background */
+    .hero__video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Dark scrim over video for text legibility */
+    .hero__video-scrim {
+      display: none;
+    }
+
+    /* ── Floating glassmorphism capsules ── */
+    .hero__capsule {
+      position: absolute;
+      z-index: 5;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: url(#frosted) blur(2px);
+      -webkit-backdrop-filter: url(#frosted) blur(2px);
+      border: 2px solid transparent;
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.6),
+        0 16px 32px rgba(0,0,0,0.12);
+      font-family: var(--f-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.95);
+      white-space: nowrap;
+      pointer-events: none;
+      will-change: transform;
+      overflow: hidden;
+    }
+
+    .hero__capsule::before { display: none; }
+
+    /* Subtle inner glow */
+    .hero__capsule::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.18) 0%,
+        rgba(255,255,255,0.04) 50%,
+        rgba(255,255,255,0.10) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Four distinct float rhythms */
+    @keyframes float-a {
+      0%,100% { transform: translateY(0px)   rotate(0deg);    }
+      40%     { transform: translateY(-14px)  rotate(0.6deg);  }
+      70%     { transform: translateY(-6px)   rotate(-0.3deg); }
+    }
+    @keyframes float-b {
+      0%,100% { transform: translateY(0px)   rotate(-0.4deg); }
+      35%     { transform: translateY(-10px)  rotate(0.2deg);  }
+      65%     { transform: translateY(-16px)  rotate(-0.5deg); }
+    }
+    @keyframes float-c {
+      0%,100% { transform: translateY(0px)   rotate(0.3deg);  }
+      45%     { transform: translateY(-12px)  rotate(-0.4deg); }
+      75%     { transform: translateY(-5px)   rotate(0.2deg);  }
+    }
+    @keyframes float-d {
+      0%,100% { transform: translateY(0px)   rotate(-0.2deg); }
+      30%     { transform: translateY(-18px)  rotate(0.5deg);  }
+      60%     { transform: translateY(-8px)   rotate(-0.3deg); }
+    }
+
+    .hero__capsule--intelligence { top: 20%;  left: 20%;  animation: float-a 5.2s ease-in-out infinite; }
+    .hero__capsule--purpose      { top: 35%;  right: 8%;  animation: float-b 4.6s ease-in-out infinite 0.9s; }
+    .hero__capsule--engineering  { top: 62%;  left: 10%;  animation: float-c 4.9s ease-in-out infinite 1.8s; }
+    .hero__capsule--impact       { top: 75%;  right: 15%; animation: float-d 4.2s ease-in-out infinite 0.4s; }
+
+    .hero__inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 30px;
+      max-width: var(--max-w);
+      width: 100%;
+      margin: 0 auto;
+      padding: calc(var(--nav-h) + 40px) var(--pad-x) 40px;
+      margin-top: -60px;
+      position: relative;
+      z-index: 4;
+    }
+
+    /* Liquid glass pill on "Applied AI" */
+    .hero__glass {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px) saturate(1.6);
+      -webkit-backdrop-filter: blur(16px) saturate(1.6);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      padding: 0 28px;
+      box-shadow:
+        0 4px 24px rgba(0,0,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    /* Display L — Cormorant 120/120 −6px */
+    .hero__headline {
+      font-family: var(--f-display);
+      font-size: 120px;
+      font-weight: 400;
+      line-height: 120px;
+      letter-spacing: -6px;
+      color: var(--white);
+      /* Parallax: JS sets --parallax-y */
+      will-change: transform;
+      transform: translateY(calc(var(--parallax-y, 0) * 1px));
+    }
+
+    /* Glassmorphism text on "Applied AI" */
+    .hero__headline em {
+      font-style: italic;
+      background: linear-gradient(
+        155deg,
+        rgba(255,255,255,1.00)  0%,
+        rgba(255,255,255,0.50) 28%,
+        rgba(255,255,255,0.82) 48%,
+        rgba(255,255,255,0.38) 68%,
+        rgba(255,255,255,0.88) 85%,
+        rgba(255,255,255,0.60) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter:
+        drop-shadow(0 1px 0px rgba(255,255,255,0.9))
+        drop-shadow(0 4px 16px rgba(255,255,255,0.18));
+    }
+
+    .hero__bottom {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Body XL descriptor line */
+    .hero__sub {
+      font-family: var(--f-ui);
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 28px;
+      letter-spacing: -1px;
+      color: var(--neutral-100);
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* scroll indicator */
+    .hero__scroll {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--neutral-300);
+      z-index: 4;
+    }
+    .hero__scroll-line {
+      width: 1px;
+      height: 40px;
+      background: var(--neutral-500);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero__scroll-line::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      animation: scroll-line 2s ease-in-out infinite;
+    }
+    @keyframes scroll-line {
+      0%   { transform: translateY(-100%); }
+      50%  { transform: translateY(0); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* ─────────────────────────────────────────
+       SECTION BASE
+    ───────────────────────────────────────── */
+    .section-light { background: var(--white); }
+    .section-surface { background: var(--surface); }
+    .section-dark { background: var(--ink); }
+
+    .section__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: var(--sec-py) var(--pad-x);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 72px;
+    }
+
+    /* ─────────────────────────────────────────
+       ABOUT — WHO WE ARE
+    ───────────────────────────────────────── */
+    .ai-eng .section__inner { padding-top: 0; }
+
+    .about .section__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about__heading em {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .about__heading { margin-bottom: 36px; }
+
+    .about__body {
+      color: var(--mid);
+      margin-bottom: 0;
+    }
+    .about__body p + p { margin-top: 20px; }
+
+    .about__img {
+      border-radius: 16px;
+      overflow: hidden;
+      clip-path: inset(50px 0 70px 0 round 16px);
+    }
+
+    .about__video {
+      width: 120%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+      transform: translateX(-60px);
+    }
+
+    /* ─────────────────────────────────────────
+       CARDS (shared)
+    ───────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s var(--ease);
+      cursor: default;
+    }
+    .card:hover {
+      border-color: var(--ink-70);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.07);
+      transform: translateY(-3px);
+    }
+
+    .card__num {
+      font-family: var(--f-display);
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--border);
+      transition: color 0.22s;
+    }
+    .card:hover .card__num { color: var(--neutral-300); }
+
+    .card__title {
+      font-family: var(--f-ui);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .card__body {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: 0;
+      color: var(--mid);
+    }
+
+    /* ─────────────────────────────────────────
+       OPEN ITEM — typographic, no border
+    ───────────────────────────────────────── */
+    /* ─────────────────────────────────────────
+       AI ENGINEERING — tabbed layout
+    ───────────────────────────────────────── */
+
+    /* Image panel */
+    .ai-tabs__image {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--neutral-50);
+      margin-bottom: 40px;
+    }
+
+    .ai-tab-img {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.5s var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-tab-img.is-active { opacity: 1; }
+
+    /* Dot-grid texture on image panels */
+    .ai-tab-img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    /* Subtle label in each image panel */
+    .ai-tab-img__label {
+      display: none;
+    }
+
+    /* Mobile-only elements — hidden on desktop */
+    .ai-mobile-dots { display: none; }
+    .ai-mobile-progress { display: none; }
+
+    /* Tab cards row */
+    .ai-tabs__cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0 var(--gap);
+    }
+
+    .ai-tab {
+      position: relative;
+      padding: 28px 32px 0 0;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    /* Grey track — full width, always visible */
+    .ai-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    /* Ink fill — animates left → right on active tab */
+    .ai-tab::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0;
+      background: var(--orange-dark);
+      border-radius: 999px;
+    }
+    .ai-tab.is-active::after {
+      animation: ai-progress var(--ai-dur, 4s) linear forwards;
+    }
+    @keyframes ai-progress {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+
+    .ai-tab__title {
+      font-family: var(--f-display);
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 30px;
+      letter-spacing: -1px;
+      color: var(--muted);
+      transition: color 0.25s var(--ease);
+      margin-bottom: 12px;
+    }
+    .ai-tab.is-active .ai-tab__title { color: var(--ink); }
+
+    .ai-tab__body {
+      font-family: var(--f-ui);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 22px;
+      color: var(--mid);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .ai-tab.is-active .ai-tab__body {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────────
+       SERVICES — modern 3-column card grid
+    ───────────────────────────────────────── */
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+    }
+
+    .svc-card {
+      position: relative;
+      padding: 48px 40px 40px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: var(--white);
+      overflow: hidden;
+      transition: background 0.3s var(--ease);
+      cursor: default;
+    }
+
+    .svc-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--orange);
+      transition: width 0.35s var(--ease);
+    }
+    .svc-card:hover::before { width: 100%; }
+    .svc-card:hover { background: var(--neutral-50); }
+
+    .svc-card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .svc-card__num {
+      font-family: var(--f-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .svc-card__icon {
+      width: 36px;
+      height: 36px;
+      color: var(--neutral-300);
+      transition: color 0.25s var(--ease);
+      flex-shrink: 0;
+    }
+    .svc-card:hover .svc-card__icon { color: var(--orange-dark); }
+
+    .svc-card__title {
+      font-family: var(--f-display);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 36px;
+      letter-spacing: -1.5px;
+      color: var(--ink);
+      transition: transform 0.25s var(--ease);
+    }
+    .svc-card:hover .svc-card__title { transform: translateX(4px); }
+
+    .svc-card__body {
+      font-family: var(--f-ui);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 22px;
+      color: var(--mid);
+      flex: 1;
+    }
+
+    .svc-card__link {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+      text-decoration: none;
+    }
+    .svc-card:hover .svc-card__link { opacity: 1; transform: translateY(0); }
+    .svc-card__link:hover { color: var(--orange); }
+    .svc-card__link .btn-arrow { transition: transform 0.2s var(--ease); }
+    .svc-card__link:hover .btn-arrow { transform: translateX(4px); }
+
+    @media (max-width: 1024px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) {
+      .svc-grid { grid-template-columns: 1fr; }
+      .svc-card { padding: 32px 24px; }
+      .svc-card__title { font-size: 28px; line-height: 30px; }
+      .svc-card__link { opacity: 1; transform: none; }
+    }
+
+    /* ─────────────────────────────────────────
+       TESTIMONIALS — quote cards
+    ───────────────────────────────────────── */
+    .testimonials { background: var(--neutral-50); }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap);
+    }
+
+    .testi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    .testi-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.07); transform: translateY(-3px); }
+
+    .testi-card__quote-mark {
+      font-family: var(--f-display);
+      font-size: 72px;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--orange);
+      display: block;
+      margin-bottom: -12px;
+    }
+
+    .testi-card__text {
+      font-family: var(--f-display);
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 30px;
+      letter-spacing: -0.5px;
+      color: var(--ink);
+      flex: 1;
+    }
+
+    .testi-card__person {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .testi-card__avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--neutral-100);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--f-ui); font-size: 16px; font-weight: 600;
+      color: var(--neutral-700);
+      flex-shrink: 0; overflow: hidden;
+    }
+    .testi-card__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .testi-card__name {
+      font-family: var(--f-ui); font-size: 15px; font-weight: 500;
+      line-height: 20px; color: var(--ink);
+    }
+    .testi-card__role {
+      font-family: var(--f-ui); font-size: 13px; font-weight: 400;
+      line-height: 18px; color: var(--mid); margin-top: 2px;
+    }
+
+    @media (max-width: 1024px) { .testi-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px)  { .testi-grid { grid-template-columns: 1fr; } }
+
+    /* ─────────────────────────────────────────
+       CASE STUDIES — single-up carousel
+    ───────────────────────────────────────── */
+    .case-carousel { overflow: hidden; background: var(--ink); }
+
+    .case-slides-track {
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .case-slide-wrap {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    .case-slide {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: var(--sec-py) var(--pad-x) 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .case-slide__content {
+      display: flex; flex-direction: column; gap: 32px;
+      position: relative; z-index: 1;
+    }
+
+    .case-slide__label { color: var(--orange); }
+
+    .case-slide__heading {
+      font-family: var(--f-display);
+      font-size: 44px; font-weight: 500;
+      line-height: 46px; letter-spacing: -2px;
+      color: var(--white);
+    }
+
+    .case-slide__media {
+      border-radius: 12px; overflow: hidden;
+      aspect-ratio: 4/3; position: relative;
+    }
+
+    /* Carousel controls bar */
+    .case-carousel__controls {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 48px var(--pad-x);
+      display: flex; align-items: center; gap: 24px;
+    }
+
+    .case-carousel__dots { display: flex; gap: 8px; align-items: center; flex: 1; }
+
+    .case-carousel__dot {
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      border: none; cursor: pointer; padding: 0;
+      transition: width 0.35s var(--ease), background 0.25s var(--ease);
+    }
+    .case-carousel__dot.is-active { width: 28px; background: var(--orange); }
+
+    .case-carousel__counter {
+      font-family: var(--f-ui); font-size: 13px; font-weight: 400;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.5px;
+    }
+
+    .case-carousel__arrow {
+      width: 44px; height: 44px;
+      border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);
+      background: none; color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.22s var(--ease), border-color 0.22s var(--ease);
+    }
+    .case-carousel__arrow:hover { background: var(--orange); border-color: var(--orange); }
+    .case-carousel__arrow svg { width: 18px; height: 18px; }
+
+    @media (max-width: 768px) {
+      .case-slide { grid-template-columns: 1fr; gap: 32px; }
+      .case-slide__heading { font-size: 30px; line-height: 34px; }
+      .case-slide__media { aspect-ratio: 16/9; }
+    }
+
+    /* ─────────────────────────────────────────
+       AI CHATBOT — floating widget
+    ───────────────────────────────────────── */
+    .chatbot {
+      position: fixed; bottom: 32px; right: 32px;
+      z-index: 1000;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+    }
+
+    .chatbot__window {
+      width: 360px; height: 500px;
+      border-radius: 20px; background: var(--white);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08);
+      display: flex; flex-direction: column; overflow: hidden;
+      transform-origin: bottom right;
+      transform: scale(0.85) translateY(12px); opacity: 0; pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.25s var(--ease);
+    }
+    .chatbot.is-open .chatbot__window { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+    .chatbot__header {
+      background: var(--ink); padding: 18px 20px;
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+
+    .chatbot__header-icon {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--orange);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .chatbot__header-icon svg { width: 18px; height: 18px; color: var(--white); }
+
+    .chatbot__header-info { flex: 1; }
+
+    .chatbot__header-title {
+      font-family: var(--f-display); font-size: 18px; font-weight: 500;
+      color: var(--white); letter-spacing: -0.5px; line-height: 1;
+    }
+
+    .chatbot__header-status {
+      display: flex; align-items: center; gap: 5px;
+      font-family: var(--f-ui); font-size: 11px; color: rgba(255,255,255,0.45);
+      margin-top: 3px;
+    }
+    .chatbot__header-status::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green-400); flex-shrink: 0;
+    }
+
+    .chatbot__close {
+      background: none; border: none; color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 4px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.2s; border-radius: 6px;
+    }
+    .chatbot__close:hover { color: var(--white); }
+    .chatbot__close svg { width: 16px; height: 16px; }
+
+    .chatbot__messages {
+      flex: 1; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; gap: 12px;
+      scroll-behavior: smooth;
+    }
+    .chatbot__messages::-webkit-scrollbar { width: 4px; }
+    .chatbot__messages::-webkit-scrollbar-thumb { background: var(--neutral-200); border-radius: 999px; }
+
+    .chatbot__bubble {
+      max-width: 84%; padding: 11px 15px;
+      border-radius: 16px 16px 16px 4px;
+      background: var(--neutral-50); border: 1px solid var(--border);
+      font-family: var(--f-ui); font-size: 14px; line-height: 21px; color: var(--ink);
+      align-self: flex-start;
+    }
+    .chatbot__bubble--user {
+      background: var(--ink); color: var(--white); border-color: var(--ink);
+      border-radius: 16px 16px 4px 16px; align-self: flex-end;
+    }
+
+    .chatbot__suggestions {
+      display: flex; flex-direction: column; gap: 6px; align-self: stretch;
+    }
+    .chatbot__suggestion {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 13px; font-family: var(--f-ui); font-size: 13px; color: var(--ink);
+      cursor: pointer; text-align: left; transition: background 0.18s, border-color 0.18s;
+    }
+    .chatbot__suggestion:hover { background: var(--orange-light); border-color: var(--orange); }
+
+    .chatbot__input-row {
+      padding: 14px 16px; border-top: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: center; flex-shrink: 0;
+    }
+    .chatbot__input {
+      flex: 1; border: 1px solid var(--border); border-radius: 999px;
+      padding: 10px 16px; font-family: var(--f-ui); font-size: 14px;
+      color: var(--ink); background: var(--white); outline: none;
+      transition: border-color 0.2s;
+    }
+    .chatbot__input:focus { border-color: var(--orange); }
+    .chatbot__input::placeholder { color: var(--muted); }
+
+    .chatbot__send {
+      width: 38px; height: 38px; border-radius: 50%; background: var(--ink);
+      border: none; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.2s;
+    }
+    .chatbot__send:hover { background: var(--orange); }
+    .chatbot__send svg { width: 15px; height: 15px; color: var(--white); }
+
+    .chatbot__toggle {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--ink); border: none; border-radius: 999px;
+      padding: 12px 20px 12px 14px; cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+      transition: background 0.22s var(--ease), transform 0.22s var(--ease);
+    }
+    .chatbot__toggle:hover { background: var(--orange); transform: translateY(-2px); }
+
+    .chatbot__toggle-icon {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--orange); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.22s var(--ease);
+    }
+    .chatbot__toggle:hover .chatbot__toggle-icon { background: rgba(255,255,255,0.2); }
+    .chatbot__toggle-icon svg { width: 15px; height: 15px; color: var(--white); }
+
+    .chatbot__toggle-label {
+      font-family: var(--f-ui); font-size: 14px; font-weight: 500;
+      color: var(--white); white-space: nowrap;
+    }
+    .chatbot.is-open .chatbot__toggle { display: none; }
+
+    @media (max-width: 640px) {
+      .chatbot { bottom: 16px; right: 16px; }
+      .chatbot__window { width: calc(100vw - 32px); height: 440px; }
+    }
+
+    /* ─────────────────────────────────────────
+       CASE STUDIES
+    ───────────────────────────────────────── */
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+    }
+
+    .case-card {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      background:
+        linear-gradient(var(--ink), var(--ink)) padding-box,
+        linear-gradient(to bottom, transparent 0%, rgba(200, 70, 20, 0.35) 100%) border-box;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.6s ease, transform 0.4s var(--ease);
+    }
+
+    /* Rising sun glow — expands radially from bottom on hover */
+    .case-card::before {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: 50%;
+      transform: translateX(-50%) translateY(60%) scale(1);
+      transform-origin: center bottom;
+      width: 100%;
+      height: 70%;
+      background: radial-gradient(ellipse at center bottom,
+        rgba(190, 60, 15, 0.85) 0%,
+        rgba(140, 35, 10, 0.45) 45%,
+        transparent 72%
+      );
+      border-radius: 50%;
+      transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity  1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .case-card:hover {
+      background:
+        linear-gradient(var(--ink), var(--ink)) padding-box,
+        linear-gradient(to bottom, transparent 0%, rgba(243, 117, 44, 0.65) 100%) border-box;
+      transform: translateY(-2px);
+    }
+    .case-card:hover::before {
+      transform: translateX(-50%) translateY(0%) scale(2);
+      opacity: 1;
+    }
+
+    .case-card__label {
+      color: var(--orange);
+      transition: color 0.4s var(--ease);
+      position: relative;
+      z-index: 1;
+    }
+    .case-card:hover .case-card__label {
+      color: var(--white);
+    }
+
+    .case-card__heading {
+      font-family: var(--f-display);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 38px;
+      letter-spacing: -1px;
+      color: var(--white);
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─────────────────────────────────────────
+       PARTNERS / CLIENTS
+    ───────────────────────────────────────── */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Partner image cards ── */
+    .partner-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .partner-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .partner-card__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 1;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    .partner-card:hover .partner-card__bg { transform: scale(1.04); }
+
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    /* ─────────────────────────────────────────
+       CLIENTS MARQUEE
+    ───────────────────────────────────────── */
+    .logo-marquee {
+      overflow: hidden;
+      width: 100%;
+      /* fade edges */
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+
+    .logo-marquee__track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      animation: marquee-scroll 32s linear infinite;
+    }
+
+    .logo-marquee:hover .logo-marquee__track {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .logo-marquee .logo-pill {
+      flex-shrink: 0;
+      width: 185px;
+      padding: 0 20px;
+    }
+
+    .logo-pill {
+      height: 72px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .logo-pill img {
+      height: 44px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ─────────────────────────────────────────
+       NUMBERS — Feuji at a glance
+    ───────────────────────────────────────── */
+    .numbers-header {
+      margin-bottom: 72px;
+    }
+    .comm-stage-inner .numbers-header {
+      margin-bottom: 40px;
+    }
+
+    .numbers-flex {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 48px;
+      padding-left: 20px;
+      border-top: 1px solid var(--green-500);
+      transition: border-color 0.4s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat:hover { border-color: var(--green-500); }
+    .stat:hover .stat__val { color: var(--green-700); }
+
+
+    /* ── Glow — hidden by default, appears on hover ── */
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 50%;
+      background: radial-gradient(ellipse 100% 100% at 50% 0%,
+        rgba(0, 183, 132, 0.50) 0%,
+        rgba(0, 183, 132, 0) 93%
+      );
+      opacity: 0;
+      transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .stat:hover::before { opacity: 1; }
+
+    /* ── Stat fade-up animation ── */
+    @keyframes stat-fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(32px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .stat--animate {
+      opacity: 0;
+    }
+    .stat--animate.is-visible {
+      animation: stat-fade-up 0.7s cubic-bezier(0,0,0.2,1) forwards;
+    }
+    .stat--animate.is-visible:nth-child(1) { animation-delay: 0.1s; }
+    .stat--animate.is-visible:nth-child(2) { animation-delay: 0.4s; }
+    .stat--animate.is-visible:nth-child(3) { animation-delay: 0.7s; }
+    .stat--animate.is-visible:nth-child(4) { animation-delay: 1.0s; }
+
+    .stat__val {
+      font-family: var(--f-display);
+      font-size: 80px;
+      font-weight: 500;
+      line-height: 80px;
+      letter-spacing: -3px;
+      color: var(--ink);
+      transition: color 0.22s var(--ease);
+    }
+
+    .stat__label {
+      font-family: var(--f-ui);
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 28px;
+      letter-spacing: -1px;
+      color: var(--mid);
+    }
+
+    /* ─────────────────────────────────────────
+       COMMUNITY — 3-col typographic cards
+    ───────────────────────────────────────── */
+    /* ── Community sticky scroll ── */
+    .comm-section { padding: 0; }
+
+    .comm-scroll-wrapper {
+      /* 100vh (sticky stage) + room for 3 card reveals at ~160px each */
+      height: calc(100vh + 600px);
+    }
+
+    .comm-sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: #003727;
+      /* Top-anchored — heading always sits near the top of the viewport */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .comm-stage-inner {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: var(--sec-py) var(--pad-x) 0;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Heading inside sticky stage — always visible, skip the reveal fade */
+    .comm-sticky-stage .reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    .comm-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* Staggered vertical offset — each card sits lower than the previous */
+    .comm-card:nth-child(1) { margin-top: 0; }
+    .comm-card:nth-child(2) { margin-top: 80px; }
+    .comm-card:nth-child(3) { margin-top: 160px; }
+
+    .comm-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: -24px;
+      margin-bottom: 8px;
+    }
+    .comm-card__icon img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .comm-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-top: 24px;
+      border-top: none;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: border-color 0.2s,
+                  opacity 0.7s cubic-bezier(0,0,0.2,1),
+                  transform 0.7s cubic-bezier(0,0,0.2,1);
+    }
+    .comm-card.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .comm-card.is-revealed:hover { border-color: rgba(255,255,255,0.5); }
+
+    .comm-card__title {
+      font-family: var(--f-display);
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 40px;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 16px;
+      transition: color 0.4s var(--ease);
+    }
+    .comm-card.is-revealed:hover .comm-card__title { color: var(--green-400); }
+
+    .comm-card__body {
+      font-family: var(--f-ui);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 25px;
+      letter-spacing: -1px;
+      color: var(--neutral-300);
+      flex: 1;
+      margin-bottom: 24px;
+    }
+
+    .comm-card__link {
+      font-family: var(--f-ui);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 18px;
+      letter-spacing: 0;
+      color: var(--white);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .comm-card__link:hover { color: var(--white); }
+    .comm-card__link .btn-arrow { transition: transform 0.2s var(--ease); }
+    .comm-card__link:hover .btn-arrow { transform: translateX(4px); }
+
+    /* ─────────────────────────────────────────
+       JOIN US
+    ───────────────────────────────────────── */
+    .join .section__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .join__img {
+      aspect-ratio: 4/3;
+      order: 2;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .join__content { order: 1; }
+
+    .join__heading {
+      margin-bottom: 28px;
+      color: var(--white);
+    }
+
+    .join__body {
+      color: var(--neutral-300);
+      margin-bottom: 44px;
+    }
+
+    /* ─────────────────────────────────────────
+       CONNECT — split layout
+    ───────────────────────────────────────── */
+    .connect .section__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 40px;
+    }
+
+    .connect__img { display: none; }
+
+    .connect__content {}
+
+    .connect__heading {
+      font-family: var(--f-display);
+      font-size: 64px;
+      font-weight: 500;
+      line-height: 64px;
+      letter-spacing: -3px;
+      color: var(--white);
+      margin-bottom: 48px;
+    }
+    .connect__heading em { font-style: italic; font-weight: 400; }
+
+    /* ── JOIN ORBIT ── */
+    .join-orbit {
+      background: var(--ink);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Stage is the full visual — SVG + content stacked */
+    .join-orbit__stage {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+    }
+
+    .join-orbit__svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Content floats inside the dome */
+    .join-orbit__content {
+      position: absolute;
+      bottom: 10%;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 0 var(--pad-x);
+    }
+
+    .join-orbit__heading {
+      color: var(--white);
+      margin-bottom: 0;
+    }
+
+    .join-orbit__body {
+      color: var(--neutral-300);
+      margin-bottom: 0;
+      max-width: 500px;
+    }
+
+    .join-orbit__btn {
+      color: var(--white);
+      border-color: var(--neutral-700);
+    }
+
+    /* ── Orbit glow: scroll-scrubbed ── */
+    .join-orbit__glow {
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    /* ── Orbit arcs + orbs: scroll-scrubbed opacity ── */
+    .join-orbit__arc,
+    .join-orbit__orb {
+      opacity: 0;
+    }
+
+    /* Connect section — dark theme */
+    .connect { background: var(--ink); }
+    .connect .eyebrow { color: var(--neutral-400); }
+    .connect .btn--secondary {
+      color: var(--white);
+      border-color: rgba(255,255,255,0.3);
+    }
+    .connect .btn--secondary:hover {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: var(--white);
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    /* ─────────────────────────────────────────
+       FOOTER REVEAL — curtain / sticky layer
+    ───────────────────────────────────────── */
+
+    /* All page content sits above the footer image */
+    .page-content {
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 24px 80px 20px rgba(0,0,0,0.85);
+    }
+
+    /* Image layer — always at the bottom, behind .page-content */
+    .footer-reveal {
+      position: sticky;
+      bottom: 0;
+      z-index: 0;
+      height: 56vh;
+      overflow: hidden;
+      background: var(--ink);
+    }
+
+    /* The photograph */
+    .footer-reveal__img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 60%;
+      display: block;
+    }
+
+    /* Dark gradient at bottom — ensures legal text is legible over the image */
+    .footer-reveal::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 30%;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.55));
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Legal bar — pinned to bottom of image layer */
+    .footer-reveal__legal {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad-x) 40px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .footer-reveal__copyright {
+      font-family: var(--f-ui);
+      font-size: 13px;
+      color: var(--neutral-500);
+    }
+
+    .footer-reveal__policy {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-reveal__policy a {
+      font-family: var(--f-ui);
+      font-size: 13px;
+      color: var(--neutral-500);
+      transition: color 0.18s;
+      text-decoration: none;
+    }
+    .footer-reveal__policy a:hover { color: var(--white); }
+
+    /* Footer — light theme, merges with section above */
+    .footer {
+      background: var(--ink);
+    }
+
+    .footer__inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 60px var(--pad-x);
+      border-top: 1px solid var(--border-dk);
+    }
+
+    .footer__top {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 32px;
+    }
+
+    .footer__col-title {
+      font-family: var(--f-ui);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .footer__link {
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 21px;
+      letter-spacing: 0;
+      color: var(--neutral-500);
+      transition: color 0.18s;
+    }
+    .footer__link:hover { color: var(--white); }
+
+    /* Accordion — desktop reset (always open, no chevron, no borders) */
+    .footer__acc-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: default;
+      pointer-events: none;
+      /* inherit title typography */
+      font-family: var(--f-ui);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .footer__acc-chevron { display: none; }
+    .footer__acc-panel { overflow: visible; max-height: none; }
+
+
+    /* ─────────────────────────────────────────
+       DIVIDERS
+    ───────────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); }
+    .divider--dark { background: var(--border-dk); }
+
+    /* ─────────────────────────────────────────
+       BRAND ORANGE ACCENTS
+    ───────────────────────────────────────── */
+    :root {
+      --orange:      #F3752C;  /* Orange 600 — Brand Primary */
+      --orange-light: #FEF3EC;
+      --orange-dark:  #DA6A29; /* Orange 700 */
+      --green-400:   #00BE91;  /* Green 400 — Community accent */
+      --green-500:   #00B784;  /* Green 500 — Stats accent */
+      --green-700:   #00805D;  /* Green 700 — Stats hover */
+    }
+
+    /* Active nav underline → orange */
+    .nav__link.is-active::after { background: var(--orange); }
+
+    /* Stat values → ink black */
+    .stat__val { color: var(--ink); }
+
+    /* Community "Learn more" links → white on hover */
+    .comm-card__link:hover { color: var(--white); }
+
+    /* Community section — inverse text on green background */
+    .comm-sticky-stage .eyebrow { color: var(--neutral-400); }
+    .comm-sticky-stage .t-h2 { color: var(--white); }
+    .comm-sticky-stage .t-h2 em { color: var(--white); }
+
+    /* Service item number → orange on hover */
+    .svc-item__num { transition: color 0.22s var(--ease); }
+    .svc-item:hover .svc-item__num { color: rgba(255,255,255,0.55); }
+
+
+    /* Footer logo accent */
+    .footer__logo { color: var(--white); }
+
+
+    /* ─────────────────────────────────────────
+       SCROLL REVEAL ANIMATIONS
+    ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+    .reveal-d4 { transition-delay: 0.32s; }
+    .reveal-d5 { transition-delay: 0.40s; }
+    .reveal-d6 { transition-delay: 0.48s; }
+
+    /* ─────────────────────────────────────────
+       TYPEWRITER — all headings
+       Scroll-driven for h2, timed for hero h1
+    ───────────────────────────────────────── */
+
+    /* Each character span — hidden by default, soft 80ms fade-in */
+    .tw-char {
+      opacity: 0;
+      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline;
+    }
+    .tw-char.is-visible { opacity: 1; }
+
+
+    /* ─────────────────────────────────────────
+       HERO — ATMOSPHERIC FOG
+       Japanese ma (間): space, pause, atmosphere
+    ───────────────────────────────────────── */
+
+    /* Grain texture overlay — very fine, 2% opacity */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      /* SVG-based noise — renders a fine grain in every browser */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      opacity: 0.35;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 3;
+    }
+
+    /* Warm atmospheric radial glow — top-left anchor, orange warmth */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 0% 100%, rgba(245,131,69,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 100% 0%, rgba(255,255,255,0.03) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Fog veil — soft ambient depth at bottom of hero.
+       Creates a slightly lifted horizon: text feels like it
+       sits on fog rather than a flat plane. */
+    .hero__fog {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(to top,
+        rgba(245,131,69,0.04) 0%,
+        transparent 100%
+      );
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* ─────────────────────────────────────────
+       IMAGE PLACEHOLDERS
+       Descriptive labels, dot-grid pattern,
+       warm neutral surface — 90% white, 10% colour
+    ───────────────────────────────────────── */
+    .img-placeholder {
+      position: relative;
+      overflow: hidden;
+      background: var(--neutral-50);
+      border: 1px solid var(--neutral-100);
+    }
+
+    /* Fine dot grid */
+    .img-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.7;
+    }
+
+    /* Label chip */
+    .img-placeholder__label {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .img-placeholder__tag {
+      display: inline-block;
+      font-family: var(--f-ui);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 4px 8px;
+      border-radius: 2px;
+      width: fit-content;
+    }
+
+    .img-placeholder__desc {
+      font-family: var(--f-ui);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 17px;
+      color: rgba(0,0,0,0.38);
+      max-width: 320px;
+    }
+
+    /* Corner pin icon */
+    .img-placeholder__pin {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .img-placeholder__pin svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.4;
+    }
+
+    /* ─────────────────────────────────────────
+       MA (間) — Japanese breathing room
+       Wider section gap, deliberate pause
+       between content and canvas edge
+    ───────────────────────────────────────── */
+    .ma-top    { padding-top:    160px; }
+    .ma-bottom { padding-bottom: 160px; }
+
+    /* Mist divider — a soft blur-bleed between sections */
+    .mist-divider {
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent 0%,
+        var(--border) 15%,
+        var(--border) 85%,
+        transparent 100%
+      );
+      margin: 0 var(--pad-x);
+    }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero__headline {
+        font-size: 80px;
+        line-height: 80px;
+        letter-spacing: -4px;
+      }
+      .about .section__inner,
+      .join .section__inner,
+      .connect .section__inner { grid-template-columns: 1fr; gap: 48px; }
+      .join__img   { order: 1; }
+      .join__content { order: 2; }
+      .ai-tabs__cards { grid-template-columns: repeat(2, 1fr); }
+      .numbers-flex { grid-template-columns: repeat(2, 1fr); }
+
+      /* Community — tighter stagger so card 3 fits inside the sticky stage */
+      .comm-cards { gap: 40px; }
+      .comm-card:nth-child(2) { margin-top: 40px; }
+      .comm-card:nth-child(3) { margin-top: 80px; }
+      .comm-card__title { font-size: 32px; line-height: 36px; }
+      .comm-card__body  { font-size: 16px; line-height: 22px; }
+    }
+
+    /* Short viewport — zero stagger so all three cards are fully visible */
+    @media (max-height: 768px) and (min-width: 641px) {
+      .comm-card:nth-child(1),
+      .comm-card:nth-child(2),
+      .comm-card:nth-child(3) { margin-top: 0; }
+    }
+
+    /* Very short viewport — disable sticky, scroll community like a normal section */
+    @media (max-height: 650px) and (min-width: 641px) {
+      .comm-scroll-wrapper { height: auto; }
+      .comm-sticky-stage   { position: relative; height: auto; }
+      .comm-stage-inner    { padding-top: var(--sec-py); padding-bottom: var(--sec-py); }
+      .comm-card           { opacity: 1; transform: none; }
+    }
+    @media (max-width: 640px) {
+      .hero__headline {
+        font-size: 56px;
+        line-height: 56px;
+        letter-spacing: -2px;
+      }
+      :root { --pad-x: 24px; --sec-py: 80px; }
+      .svc-item { grid-template-columns: 40px 1fr; gap: 0 24px; }
+      .svc-item__body { display: none; }
+      .ai-tabs__cards { grid-template-columns: 1fr 1fr; }
+      .comm-cards { grid-template-columns: 1fr; }
+      .comm-scroll-wrapper { height: auto; }
+      .comm-sticky-stage { position: relative; height: auto; }
+      .comm-stage-inner { padding-top: var(--sec-py); padding-bottom: var(--sec-py); }
+      .comm-card { opacity: 1; transform: none; }
+      .numbers-flex { grid-template-columns: 1fr 1fr; }
+      .section-header { grid-template-columns: 1fr; gap: 24px; }
+      .t-h2 { font-size: 40px; line-height: 42px; letter-spacing: -2px; }
+    }
+
+  /* ═══════════════════════════════════════════
+     MOBILE STYLES — max-width: 768px
+     Desktop styles are untouched above.
+  ═══════════════════════════════════════════ */
+
+  /* Hamburger — hidden on desktop */
+  .nav__hamburger { display: none; }
+  .mobile-nav     { display: none; }
+
+  @media (max-width: 768px) {
+
+    /* ── Tokens ── */
+    :root {
+      --pad-x:  20px;
+      --sec-py: 60px;
+    }
+
+    /* ── Nav ── */
+    .nav__links,
+    .nav__cta-wrap { display: none !important; }
+
+    .nav__hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: auto;
+      z-index: 201;
+      position: relative;
+    }
+    .nav__hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform-origin: center;
+    }
+    .nav__hamburger.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav__hamburger.is-open span:nth-child(2) { opacity: 0; }
+    .nav__hamburger.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* ── Mobile nav drawer ── */
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 200;
+      padding: 100px 32px 48px;
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+      pointer-events: none;
+    }
+    .mobile-nav.is-open {
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .mobile-nav__links { list-style: none; padding: 0; margin: 0 0 40px; width: 100%; }
+    .mobile-nav__link {
+      display: block;
+      font-family: var(--f-display);
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--neutral-100);
+      text-decoration: none;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      transition: color 0.2s;
+    }
+    .mobile-nav__link:hover { color: var(--orange); }
+    .mobile-nav__cta { margin-top: auto; }
+
+    /* ── Hero ── */
+    .hero { min-height: 100svh; }
+    .hero__inner { padding: 100px var(--pad-x) 48px; }
+    .hero__headline {
+      font-size: 52px !important;
+      line-height: 54px !important;
+      letter-spacing: -2px !important;
+    }
+    .hero__sub { font-size: 15px; max-width: 100%; }
+    .hero__actions { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .hero__capsule { display: none; }
+    .hero__scroll  { display: none; }
+
+    /* ── Section padding ── */
+    .section-light,
+    .section-dark,
+    .section-surface { padding-top: var(--sec-py); padding-bottom: var(--sec-py); }
+    .section__inner  { padding: 0 var(--pad-x); }
+    .container       { padding: 0 var(--pad-x); }
+
+    /* ── Typography ── */
+    .t-h2 { font-size: 36px !important; line-height: 40px !important; letter-spacing: -1.5px !important; }
+
+    /* ── Numbers / Feuji at a Glance ── */
+    .numbers-flex {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0 !important;
+    }
+    .stat { padding-top: 32px; padding-left: 12px; }
+    .stat__val { font-size: 56px; }
+
+    /* ── AI Engineering — mobile carousel ── */
+    #ai-engineering { padding-bottom: var(--sec-py); }
+
+    /* Re-show the video panel, taller ratio for portrait screens */
+    .ai-tabs__image {
+      display: block !important;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 0;
+      border-radius: 16px;
+    }
+
+    /* Progress bar between video and heading */
+    .ai-mobile-progress {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      border-radius: 999px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    .ai-mobile-progress__fill {
+      height: 100%;
+      width: 0;
+      background: var(--orange-dark);
+      border-radius: 999px;
+    }
+    .ai-mobile-progress__fill.is-running {
+      animation: ai-progress 4s linear forwards;
+    }
+
+    /* Single-column card area, no gap (only active card shows) */
+    .ai-tabs__cards {
+      grid-template-columns: 1fr !important;
+      gap: 0 !important;
+      position: relative;
+      min-height: 100px;
+      margin-top: 24px;
+    }
+
+    /* Hide all tabs; only show the active one */
+    .ai-tab { display: none !important; padding: 20px 0 0 !important; }
+    .ai-tab.is-active { display: block !important; }
+
+    /* Remove top progress bar — dots replace it */
+    .ai-tab::before, .ai-tab::after { display: none !important; }
+
+    /* Always show body text on mobile (no fade-in needed) */
+    .ai-tab.is-active .ai-tab__body {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* Title styling on mobile */
+    .ai-tab__title {
+      font-size: 22px !important;
+      line-height: 28px !important;
+      color: var(--ink) !important;
+      margin-bottom: 8px;
+    }
+
+    /* ── Dot-pill progress indicators ── */
+    .ai-mobile-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .ai-dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.15);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .ai-dot.is-active {
+      width: 24px;
+      background: var(--ink);
+    }
+
+    /* ── Case Studies ── */
+    .case-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px;
+    }
+    .case-card { padding: 36px 24px; }
+    .case-card__heading { font-size: 28px; line-height: 34px; }
+
+    /* ── Partners ── */
+    .partner-cards {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px;
+    }
+
+    /* ── Clients marquee ── */
+    .logo-marquee .logo-pill { padding: 0 16px; width: 140px; }
+    .logo-pill img { height: 32px; }
+
+    /* ── Community ── */
+    .comm-stage-inner { padding: var(--sec-py) var(--pad-x); }
+    .comm-cards { grid-template-columns: 1fr !important; gap: 0; }
+    .comm-scroll-wrapper { height: auto; }
+    .comm-sticky-stage { position: relative; height: auto; }
+    .comm-card { opacity: 1 !important; transform: none !important; margin-top: 0 !important; }
+    .comm-card__icon { margin-top: 0; margin-bottom: 16px; }
+    .comm-card__title { font-size: 28px; line-height: 32px; }
+    .comm-card__body  { font-size: 15px; line-height: 22px; }
+
+    /* ── Join Orbit ── */
+    .join .section__inner { grid-template-columns: 1fr !important; gap: 32px; }
+
+    /* Keep community section flush (override mobile section-light padding) */
+    .comm-section { padding: 0 !important; }
+
+    /* Mobile: orbit SVG on top, text content stacked below */
+    .join-orbit { padding: var(--sec-py) 0; }
+
+    .join-orbit__stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--ink); /* ensure bg covers any SVG transparency */
+    }
+
+    /* SVG stays full-width but capped so the arc dome reads clearly */
+    .join-orbit__svg { max-height: 220px; }
+
+    /* Pull content out of absolute overlay → normal flow below SVG */
+    .join-orbit__content {
+      position: static !important;
+      bottom: auto !important;
+      left: auto !important;
+      right: auto !important;
+      padding: 32px var(--pad-x) 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ── Who We Are (About) ── */
+    .about .section__inner {
+      grid-template-columns: 1fr !important;
+      gap: 40px;
+      padding-top: var(--sec-py) !important;
+    }
+    .about__img {
+      clip-path: inset(40px 0 60px 0 round 16px) !important;
+    }
+
+    /* ── Services ── */
+    .section-header { grid-template-columns: 1fr !important; gap: 16px; }
+
+    /* ── Footer accordion (mobile) ── */
+    .footer__inner { padding: 48px var(--pad-x) 32px; }
+
+    .footer__top {
+      display: flex !important;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Each accordion row */
+    .footer__acc {
+      border-bottom: 1px solid var(--border-dk);
+    }
+    .footer__acc:first-child {
+      border-top: 1px solid var(--border-dk);
+    }
+
+    /* Toggle button */
+    .footer__acc-btn {
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 18px 0;
+      margin-bottom: 0;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    /* Chevron */
+    .footer__acc-chevron {
+      display: block;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--neutral-500);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .footer__acc.is-open .footer__acc-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* Collapsible panel */
+    .footer__acc-panel {
+      overflow: hidden !important;
+      max-height: 0 !important;
+      transition: max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .footer__acc.is-open .footer__acc-panel {
+      max-height: 400px !important;
+    }
+
+    /* Links padding inside open panel */
+    .footer__acc-panel .footer__links {
+      padding-bottom: 20px;
+    }
+
+    .footer__cols  { grid-template-columns: 1fr 1fr !important; gap: 32px; }
+
+    /* ── Footer reveal ── */
+    .footer-reveal { height: 45vh; }
+
+  }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       PAGE CONTENT — sits above footer image
+  ══════════════════════════════════════ -->
+  <div class="page-content">
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════ -->
+  <nav class="nav nav--dark" id="mainNav" aria-label="Primary navigation">
+    <div class="nav__inner">
+
+      <a href="#hero" class="nav__logo">
+        <img src="Assets/images/feuji-orange-logo.png" alt="Feuji" class="nav__logo-img" />
+      </a>
+
+      <ul class="nav__links" role="list">
+        <li><a href="#ai-engineering" class="nav__link t-nav" data-section="ai-engineering">Applied AI</a></li>
+        <li><a href="#services"       class="nav__link t-nav" data-section="services">Services</a></li>
+        <li><a href="#services"       class="nav__link t-nav">Industries</a></li>
+        <li><a href="#community"      class="nav__link t-nav" data-section="community">Community</a></li>
+        <li><a href="#case-studies"   class="nav__link t-nav" data-section="case-studies">Insights</a></li>
+        <li><a href="#about"          class="nav__link t-nav" data-section="about">Who we are</a></li>
+      </ul>
+
+      <div class="nav__cta-wrap">
+        <a href="#connect" class="btn btn--primary-orange t-btn">Let's connect <span class="btn-arrow">→</span></a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button class="nav__hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- Mobile nav drawer -->
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <ul class="mobile-nav__links" role="list">
+      <li><a href="#ai-engineering" class="mobile-nav__link">Applied AI</a></li>
+      <li><a href="#services"       class="mobile-nav__link">Services</a></li>
+      <li><a href="#services"       class="mobile-nav__link">Industries</a></li>
+      <li><a href="#community"      class="mobile-nav__link">Community</a></li>
+      <li><a href="#case-studies"   class="mobile-nav__link">Insights</a></li>
+      <li><a href="#about"          class="mobile-nav__link">Who we are</a></li>
+    </ul>
+    <a href="#connect" class="btn btn--primary-orange t-btn mobile-nav__cta">Let's connect <span class="btn-arrow">→</span></a>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       HERO
+  ══════════════════════════════════════ -->
+  <section id="hero" class="hero" aria-labelledby="hero-heading">
+
+    <!-- SVG filters: frosted capsules + 3D glass text -->
+    <svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+      <defs>
+        <!-- Capsule frosted filter -->
+        <filter id="frosted" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+          <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+          <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+          <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+          <feGaussianBlur stdDeviation="1.5" result="blurred"/>
+          <feComposite in="blurred" in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        <!-- 3D glass text: specular surface lighting + depth shadow -->
+        <filter id="glass-text-3d" x="-8%" y="-30%" width="116%" height="160%" color-interpolation-filters="sRGB">
+          <!-- Height map from letter shapes -->
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="heightMap"/>
+          <!-- Specular highlight: simulates light hitting glass surface from top-left -->
+          <feSpecularLighting in="heightMap" surfaceScale="6" specularConstant="1.4"
+                              specularExponent="50" lighting-color="#ffffff" result="specular">
+            <fePointLight x="-300" y="-400" z="500"/>
+          </feSpecularLighting>
+          <!-- Clip specular to letter shapes only -->
+          <feComposite in="specular" in2="SourceAlpha" operator="in" result="clippedSpecular"/>
+          <!-- Merge specular highlights onto the gradient text -->
+          <feComposite in="SourceGraphic" in2="clippedSpecular"
+                       operator="arithmetic" k1="0" k2="1" k3="0.55" k4="0" result="lit"/>
+          <!-- Soft depth shadow beneath letters -->
+          <feDropShadow dx="0" dy="5" stdDeviation="10"
+                        flood-color="rgba(0,0,0,0.55)" in="lit"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Full-bleed video background -->
+    <video class="hero__video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="Assets/images/banner-video.mp4" type="video/mp4">
+    </video>
+    <!-- Scrim for text legibility -->
+    <div class="hero__video-scrim" aria-hidden="true"></div>
+
+    <!-- Floating glassmorphism capsules -->
+    <span class="hero__capsule hero__capsule--intelligence" aria-hidden="true">Intelligence</span>
+    <span class="hero__capsule hero__capsule--purpose"      aria-hidden="true">Purpose</span>
+    <span class="hero__capsule hero__capsule--engineering"  aria-hidden="true">Engineering</span>
+    <span class="hero__capsule hero__capsule--impact"       aria-hidden="true">Impact</span>
+
+    <div class="hero__inner">
+
+      <h1 id="hero-heading" class="hero__headline">
+        <em>Applied AI</em><br>Engineering
+      </h1>
+
+      <div class="hero__bottom">
+        <p class="hero__sub">
+          Building production-grade AI systems that solve real, meaningful business problems.
+        </p>
+        <a href="#connect" class="btn btn--primary-inv t-btn" style="margin-top: 24px; align-self: center;">Ask us how <span class="btn-arrow">→</span></a>
+      </div>
+
+    </div>
+
+    <!-- Atmospheric fog veil at bottom of hero -->
+    <div class="hero__fog" aria-hidden="true"></div>
+
+    <div class="hero__scroll" aria-hidden="true">
+      <span class="t-label-s" style="font-size:11px; letter-spacing:1px; color:inherit;">Scroll</span>
+      <span class="hero__scroll-line"></span>
+    </div>
+  </section>
+
+
+
+  <!-- ══════════════════════════════════════
+       WHO WE ARE
+  ══════════════════════════════════════ -->
+  <section id="about" class="about" style="background:var(--neutral-50);" aria-labelledby="about-heading">
+    <div class="section__inner">
+
+      <div class="about__left">
+        <span class="t-label-s eyebrow reveal">Who we are</span>
+        <h2 id="about-heading" class="t-h2 about__heading reveal">
+          We are<br><em>Feuji</em>
+        </h2>
+        <div class="about__body t-body-l reveal reveal-d1">
+          <p>
+            Enterprises are investing in AI, yet outcomes remain limited. Efforts stall in pilots,
+            systems stay disconnected, and value is hard to measure. The gap is not ambition.
+            It is execution.
+          </p>
+          <p>
+            At Feuji, we close this gap through applied AI engineering. We design, build, and run
+            production-grade systems that embed AI into core workflows. This delivers faster
+            decisions, lower operational cost, and measurable business impact at scale.
+          </p>
+        </div>
+      </div>
+
+      <div class="about__img reveal reveal-d2">
+        <video class="about__video" autoplay muted loop playsinline preload="auto">
+          <source src="Assets/images/hf_20260303_071415_7a7d4099-8c41-47e9-b050-3c4aae423622.mp4" type="video/mp4">
+        </video>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       AI ENGINEERING
+  ══════════════════════════════════════ -->
+  <section id="ai-engineering" class="ai-eng" style="background:var(--neutral-50);" aria-labelledby="ai-heading">
+    <div class="section__inner">
+
+      <div class="section-header">
+        <div>
+          <span class="t-label-s eyebrow reveal">AI Engineering</span>
+          <h2 id="ai-heading" class="t-h2 reveal">
+            Engineering AI<br><em>for outcomes</em>
+          </h2>
+        </div>
+        <div class="reveal reveal-d1" style="align-self: end;">
+          <p class="t-body-l" style="color: var(--mid);">
+            From idea to production, we help you build and deliver real world impact.
+          </p>
+        </div>
+      </div>
+
+      <div class="ai-tabs reveal">
+
+        <!-- ── Image panel ── -->
+        <div class="ai-tabs__image">
+
+          <div class="ai-tab-img is-active" data-tab="0" style="background: var(--neutral-50);">
+            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+              <source src="Assets/images/ai-engineering/gettyimages-2188313395-640_adpp.mp4" type="video/mp4">
+            </video>
+            <span class="ai-tab-img__label">Feuji AI Labs</span>
+          </div>
+
+          <div class="ai-tab-img" data-tab="1" style="background: var(--neutral-50);">
+            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+              <source src="Assets/images/ai-engineering/gettyimages-2151855243-640_adpp.mp4" type="video/mp4">
+            </video>
+            <span class="ai-tab-img__label">AI &amp; ML Solutions</span>
+          </div>
+
+          <div class="ai-tab-img" data-tab="2" style="background: var(--neutral-50);">
+            <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+              <source src="Assets/images/ai-engineering/gettyimages-2182400108-640_adpp.mp4" type="video/mp4">
+            </video>
+            <span class="ai-tab-img__label">AI Innovation Suite</span>
+          </div>
+
+          <div class="ai-tab-img" data-tab="3" style="background: var(--ink);">
+            <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+              <source src="Assets/images/ai-engineering/gettyimages-1415599817-640_adpp.mp4" type="video/mp4">
+            </video>
+            <span class="ai-tab-img__label">AI Partnership Ecosystem</span>
+          </div>
+
+        </div>
+
+        <!-- ── Mobile progress bar (hidden on desktop) ── -->
+        <div class="ai-mobile-progress" aria-hidden="true">
+          <div class="ai-mobile-progress__fill"></div>
+        </div>
+
+        <!-- ── Tab cards ── -->
+        <div class="ai-tabs__cards">
+
+          <div class="ai-tab is-active" data-tab="0">
+            <h3 class="ai-tab__title">Feuji AI Labs</h3>
+            <p class="ai-tab__body">Rapidly build and validate AI use cases ready for real-world deployment.</p>
+          </div>
+
+          <div class="ai-tab" data-tab="1">
+            <h3 class="ai-tab__title">AI &amp; ML Solutions</h3>
+            <p class="ai-tab__body">Production-grade AI systems that improve cost, speed, and decision-making.</p>
+          </div>
+
+          <div class="ai-tab" data-tab="2">
+            <h3 class="ai-tab__title">AI Innovation Suite</h3>
+            <p class="ai-tab__body">Pre-built AI components that accelerate deployment and reduce risk.</p>
+          </div>
+
+          <div class="ai-tab" data-tab="3">
+            <h3 class="ai-tab__title">AI Partnership Ecosystem</h3>
+            <p class="ai-tab__body">Strategic integrations that scale AI performance across platforms and workflows.</p>
+          </div>
+
+        </div>
+
+        <!-- Mobile-only dot indicators -->
+        <div class="ai-mobile-dots" role="tablist" aria-label="AI Engineering topics">
+          <button class="ai-dot is-active" data-tab="0" aria-label="Topic 1 of 4" aria-selected="true"></button>
+          <button class="ai-dot" data-tab="1" aria-label="Topic 2 of 4" aria-selected="false"></button>
+          <button class="ai-dot" data-tab="2" aria-label="Topic 3 of 4" aria-selected="false"></button>
+          <button class="ai-dot" data-tab="3" aria-label="Topic 4 of 4" aria-selected="false"></button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       SERVICES
+  ══════════════════════════════════════ -->
+  <section id="services" class="section-light" aria-labelledby="services-heading">
+    <div class="section__inner">
+
+      <div class="section-header">
+        <div>
+          <span class="t-label-s eyebrow reveal">Services</span>
+          <h2 id="services-heading" class="t-h2 reveal">
+            Accelerate to <em>value</em><br>with our services
+          </h2>
+        </div>
+        <div class="reveal reveal-d1" style="align-self: end;">
+          <p class="t-body-xl" style="color: var(--mid);">
+            We help build core capabilities that design, build, and run modern digital systems.
+          </p>
+        </div>
+      </div>
+
+      <div class="svc-grid reveal">
+
+        <!-- 01 Consulting -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">01</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Consulting</h3>
+          <p class="svc-card__body">Translate business priorities into clear technology and execution roadmaps.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 02 Cloud Solutions -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">02</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Cloud Solutions</h3>
+          <p class="svc-card__body">Build scalable, resilient cloud environments optimized for performance and cost.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 03 Digital Engineering -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">03</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Digital Engineering</h3>
+          <p class="svc-card__body">Design and develop high-quality applications built for speed and scale.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 04 Data and Insights -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">04</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Data and Insights</h3>
+          <p class="svc-card__body">Turn data into actionable intelligence that improves decisions and outcomes.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 05 Cybersecurity -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">05</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Cybersecurity</h3>
+          <p class="svc-card__body">Protect systems and data with built-in security across the digital stack.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- 06 Managed Services -->
+        <div class="svc-card">
+          <div class="svc-card__top">
+            <span class="svc-card__num">06</span>
+            <svg class="svc-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+            </svg>
+          </div>
+          <h3 class="svc-card__title">Managed Services</h3>
+          <p class="svc-card__body">Operate and optimize systems continuously to ensure reliability and efficiency.</p>
+          <a href="#" class="svc-card__link">Explore <span class="btn-arrow">→</span></a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       TESTIMONIALS
+  ══════════════════════════════════════ -->
+  <section id="testimonials" class="testimonials" aria-labelledby="testi-heading">
+    <div class="section__inner">
+
+      <div class="section-header reveal">
+        <div>
+          <span class="t-label-s eyebrow">Client testimonials</span>
+          <h2 id="testi-heading" class="t-h2" style="margin-top:16px;">
+            Trusted by leaders<br><em>who demand results</em>
+          </h2>
+        </div>
+        <div style="align-self: end;">
+          <p class="t-body-l" style="color: var(--mid);">
+            Hear from the teams who've seen the impact of applied AI engineering first-hand.
+          </p>
+        </div>
+      </div>
+
+      <div class="testi-grid">
+
+        <div class="testi-card reveal">
+          <span class="testi-card__quote-mark" aria-hidden="true">"</span>
+          <p class="testi-card__text">Working with Feuji transformed how we approach data infrastructure. Their team delivered measurable results within the first quarter — outcomes we hadn't seen in years of trying internally.</p>
+          <div class="testi-card__person">
+            <div class="testi-card__avatar" aria-hidden="true">SC</div>
+            <div>
+              <p class="testi-card__name">Sarah Chen</p>
+              <p class="testi-card__role">Chief Technology Officer, Cotiviti</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card reveal reveal-d1">
+          <span class="testi-card__quote-mark" aria-hidden="true">"</span>
+          <p class="testi-card__text">The GCC model Feuji built gave us the engineering talent and governance we needed to scale without compromising quality. It redefined how we think about offshore delivery.</p>
+          <div class="testi-card__person">
+            <div class="testi-card__avatar" aria-hidden="true">MW</div>
+            <div>
+              <p class="testi-card__name">Marcus Williams</p>
+              <p class="testi-card__role">VP Engineering, DXC Technology</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-card reveal reveal-d2">
+          <span class="testi-card__quote-mark" aria-hidden="true">"</span>
+          <p class="testi-card__text">Feuji's AI engineering team helped us cut our migration timeline in half. Every KPI we set was met — several were exceeded. The expertise they bring is genuinely rare.</p>
+          <div class="testi-card__person">
+            <div class="testi-card__avatar" aria-hidden="true">PS</div>
+            <div>
+              <p class="testi-card__name">Priya Sharma</p>
+              <p class="testi-card__role">Head of Data Engineering, GSK</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       CASE STUDIES — single-up carousel
+  ══════════════════════════════════════ -->
+  <section id="case-studies" class="case-carousel" aria-labelledby="cases-heading">
+
+    <!-- Section heading -->
+    <div style="max-width: var(--max-w); margin: 0 auto; padding: var(--sec-py) var(--pad-x) 0;">
+      <h2 id="cases-heading" class="t-h2 reveal" style="color: var(--white); text-align: center;">
+        Delivering outcomes<br><em>that matter to you</em>
+      </h2>
+    </div>
+
+    <!-- Slides track -->
+    <div class="case-slides-track" id="caseSlidesTrack" aria-live="polite">
+
+      <!-- Slide 1 -->
+      <div class="case-slide-wrap" role="group" aria-label="Case study 1 of 3">
+        <div class="case-slide">
+          <div class="case-slide__content">
+            <p class="t-label-s case-slide__label">Case Study — Data &amp; Migration</p>
+            <h3 class="case-slide__heading">How did we achieve a 50% reduction in migration time to Snowflake for a billion-dollar data analytics company?</h3>
+            <a href="#" class="btn btn--tertiary-inv t-btn">
+              Discover now <span class="btn-arrow">→</span>
+            </a>
+          </div>
+          <div class="case-slide__media img-placeholder">
+            <div class="img-placeholder__pin" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="img-placeholder__label">
+              <span class="img-placeholder__tag">Image placeholder</span>
+              <span class="img-placeholder__desc">Client case study visual — Snowflake data migration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="case-slide-wrap" role="group" aria-label="Case study 2 of 3">
+        <div class="case-slide">
+          <div class="case-slide__content">
+            <p class="t-label-s case-slide__label">Case Study — Digital Transformation</p>
+            <h3 class="case-slide__heading">How did we streamline processes and reduce costs for a $120M online ticketing platform?</h3>
+            <a href="#" class="btn btn--tertiary-inv t-btn">
+              Discover now <span class="btn-arrow">→</span>
+            </a>
+          </div>
+          <div class="case-slide__media img-placeholder">
+            <div class="img-placeholder__pin" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="img-placeholder__label">
+              <span class="img-placeholder__tag">Image placeholder</span>
+              <span class="img-placeholder__desc">Client case study visual — ticketing platform transformation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 — lorem ipsum + video placeholder -->
+      <div class="case-slide-wrap" role="group" aria-label="Case study 3 of 3">
+        <div class="case-slide">
+          <div class="case-slide__content">
+            <p class="t-label-s case-slide__label">Case Study — AI Engineering</p>
+            <h3 class="case-slide__heading">How did we help a Fortune 500 manufacturer reduce operational costs by 35% with applied AI?</h3>
+            <a href="#" class="btn btn--tertiary-inv t-btn">
+              Discover now <span class="btn-arrow">→</span>
+            </a>
+          </div>
+          <div class="case-slide__media img-placeholder" style="background: var(--ink-90); border: 1px solid var(--border-dk); display: flex; align-items: center; justify-content: center;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 1;">
+              <div style="width: 60px; height: 60px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <span style="font-family: var(--f-ui); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.3);">Video placeholder</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Controls -->
+    <div class="case-carousel__controls">
+      <button class="case-carousel__arrow" id="casePrev" aria-label="Previous case study">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div class="case-carousel__dots" role="tablist" aria-label="Case study navigation">
+        <button class="case-carousel__dot is-active" data-slide="0" aria-label="Case study 1" aria-selected="true"></button>
+        <button class="case-carousel__dot" data-slide="1" aria-label="Case study 2" aria-selected="false"></button>
+        <button class="case-carousel__dot" data-slide="2" aria-label="Case study 3" aria-selected="false"></button>
+      </div>
+
+      <span class="case-carousel__counter" id="caseCounter">1 / 3</span>
+
+      <button class="case-carousel__arrow" id="caseNext" aria-label="Next case study">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CLIENTS
+  ══════════════════════════════════════ -->
+  <section id="clients" class="section-surface" aria-labelledby="clients-heading">
+    <div class="section__inner" style="padding-top: 96px; padding-bottom: 96px;">
+
+      <span class="t-label-s eyebrow reveal" style="display:block; text-align:center;">Our Clients</span>
+      <h2 id="clients-heading" class="t-h2 reveal" style="max-width: 840px; margin-bottom: 56px; text-align:center; margin-left:auto; margin-right:auto;">
+        Building <em>trust</em> through deep partnerships with our clients
+      </h2>
+
+      <div class="logo-marquee reveal reveal-d1" aria-label="Client logos">
+        <div class="logo-marquee__track">
+
+          <!-- Set 1 -->
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/agco-logo.png" alt="AGCO" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/bankunited-logo.png" alt="BankUnited" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/cotiviti-logo.png" alt="Cotiviti" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/dxc-logo.png" alt="DXC Technology" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/gsk-logo.png" alt="GSK" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/hewlett-packard-logo.png" alt="HP Enterprise" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/haleon-logo.png" alt="Haleon" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/microfocus-logo.png" alt="Micro Focus" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/nagase-logo.png" alt="Nagase America" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/plzgroup-logo.png" alt="PLZ" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/rygen-logo.png" alt="Rygen" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/trinet-logo.png" alt="TriNet" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/encore-logo.png" alt="Encore" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/leaselock-logo.png" alt="LeaseLock" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/ontrac-logo.png" alt="OnTrac" /></div>
+
+          <!-- Set 2 — duplicate for seamless loop -->
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/agco-logo.png" alt="AGCO" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/bankunited-logo.png" alt="BankUnited" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/cotiviti-logo.png" alt="Cotiviti" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/dxc-logo.png" alt="DXC Technology" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/gsk-logo.png" alt="GSK" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/hewlett-packard-logo.png" alt="HP Enterprise" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/haleon-logo.png" alt="Haleon" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/microfocus-logo.png" alt="Micro Focus" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/nagase-logo.png" alt="Nagase America" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/plzgroup-logo.png" alt="PLZ" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/rygen-logo.png" alt="Rygen" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/trinet-logo.png" alt="TriNet" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/encore-logo.png" alt="Encore" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/leaselock-logo.png" alt="LeaseLock" /></div>
+          <div class="logo-pill"><img src="Assets/Feuji-%20clients%20%26%20partner%20logos/Clients/client-new-logo-folder-feuji/ontrac-logo.png" alt="OnTrac" /></div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- Feuji at a glance section removed in v003 -->
+
+
+  <!-- ══════════════════════════════════════
+       COMMUNITY
+  ══════════════════════════════════════ -->
+  <section id="community" class="section-light comm-section" aria-labelledby="community-heading">
+
+    <div class="comm-scroll-wrapper">
+      <div class="comm-sticky-stage">
+        <div class="comm-stage-inner">
+
+          <div class="numbers-header">
+            <span class="t-label-m eyebrow reveal">Community</span>
+            <h2 id="community-heading" class="t-h2 reveal" style="margin-top: 20px; max-width: 840px;">
+              Investing in communities<br>to drive <em>inclusive growth</em>
+            </h2>
+          </div>
+
+          <div class="comm-cards">
+
+            <div class="comm-card" data-comm-idx="0">
+              <div class="comm-card__icon">
+                <img src="Assets/icons/icon-smart-village.svg" alt="Smart Village" />
+              </div>
+              <h3 class="comm-card__title">Smart Village</h3>
+              <p class="comm-card__body">
+                We partner with rural communities to bring digital infrastructure, connectivity,
+                and technology-enabled services that improve livelihoods and create new economic
+                opportunities at the grassroots level.
+              </p>
+              <a href="#" class="comm-card__link t-btn">
+                Learn more <span class="btn-arrow">→</span>
+              </a>
+            </div>
+
+            <div class="comm-card" data-comm-idx="1">
+              <div class="comm-card__icon">
+                <img src="Assets/icons/icon-education.svg" alt="Education" />
+              </div>
+              <h3 class="comm-card__title">Education</h3>
+              <p class="comm-card__body">
+                Through scholarships, mentorship programmes, and skills training, we invest in
+                the next generation of technology talent — expanding access to quality education
+                and building capability in underserved communities.
+              </p>
+              <a href="#" class="comm-card__link t-btn">
+                Learn more <span class="btn-arrow">→</span>
+              </a>
+            </div>
+
+            <div class="comm-card" data-comm-idx="2">
+              <div class="comm-card__icon">
+                <img src="Assets/icons/icon-sustainability.svg" alt="Sustainability" />
+              </div>
+              <h3 class="comm-card__title">Sustainability</h3>
+              <p class="comm-card__body">
+                We embed sustainable practices into how we operate and how we build — reducing
+                our environmental footprint, supporting green initiatives, and contributing to
+                a more responsible technology industry.
+              </p>
+              <a href="#" class="comm-card__link t-btn">
+                Learn more <span class="btn-arrow">→</span>
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       JOIN US
+  ══════════════════════════════════════ -->
+
+
+  <!-- ══════════════════════════════════════
+       JOIN ORBIT — content inside the dome
+  ══════════════════════════════════════ -->
+  <section class="join-orbit" aria-hidden="false">
+
+    <!--
+      Stage: SVG is the full visual canvas, content is overlaid inside the arch.
+
+      viewBox  0 0 1440 560     Arc centre: (720, 560)  ← bottom-centre
+      All arcs: M (720-r) 560  A r r 0 0 0  (720+r) 560   (sweep=0 → curves upward)
+
+        Inner  r=200  M 520 560  A 200 200 0 0 0  920 560   peak (720, 360)
+        Middle r=340  M 380 560  A 340 340 0 0 0 1060 560   peak (720, 220)
+        Outer  r=500  M 220 560  A 500 500 0 0 0 1220 560   peak (720,  60)
+
+      Circle positions: x = 720 + r·cos(θ),  y = 560 − r·sin(θ)
+    -->
+    <div class="join-orbit__stage">
+
+      <!--
+        viewBox 0 0 1440 560 — arc centre (720, 560)
+        All arcs sweep=0 (upward):
+          Inner  r=200  M 520 560 A 200 200 0 0 0  920 560   peak y=360
+          Middle r=340  M 380 560 A 340 340 0 0 0 1060 560   peak y=220
+          Outer  r=500  M 220 560 A 500 500 0 0 0 1220 560   peak y= 60
+
+        Circle positions — x=720+r·cos(θ), y=560−r·sin(θ)
+          Outer  θ=62°  → (955, 118)   r=22  top-right medium
+          Outer  θ=143° → (321, 259)   r=40  left large
+          Outer  θ=14°  → (1205, 439)  r=40  right large (near edge)
+          Middle θ=150° → (426, 390)   r=18  left-lower small
+        No circles on inner arc — keeps text area clear
+      -->
+      <svg class="join-orbit__svg" viewBox="0 0 1440 560" fill="none"
+           xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+
+        <defs>
+          <!-- Orange glow centred on the content area -->
+          <radialGradient id="orbit-glow" gradientUnits="userSpaceOnUse"
+                          cx="720" cy="470" r="300">
+            <stop offset="0%"   stop-color="#F3752C" stop-opacity="0.60"/>
+            <stop offset="45%"  stop-color="#DA6A29" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Circular clip paths for orbit image placeholders -->
+          <clipPath id="orb-clip1"><circle cx="955"  cy="118" r="22"/></clipPath>
+          <clipPath id="orb-clip2"><circle cx="321"  cy="259" r="40"/></clipPath>
+          <clipPath id="orb-clip3"><circle cx="1205" cy="439" r="40"/></clipPath>
+          <clipPath id="orb-clip4"><circle cx="391"  cy="370" r="18"/></clipPath>
+        </defs>
+
+        <!-- ── Orange radial glow ── -->
+        <ellipse class="join-orbit__glow" cx="720" cy="480" rx="360" ry="260" fill="url(#orbit-glow)"/>
+
+        <!-- ── Arc strokes — sweep=1 = clockwise = curves UPWARD in SVG screen coords ── -->
+        <path class="join-orbit__arc" d="M 340 560 A 380 380 0 0 1 1100 560"
+              stroke="#292929" stroke-width="1"/>
+        <path class="join-orbit__arc" d="M 220 560 A 500 500 0 0 1 1220 560"
+              stroke="#292929" stroke-width="1"/>
+
+        <!-- ── Separator line at base with horizontal margin ── -->
+        <line x1="80" y1="558" x2="1360" y2="558"
+              stroke="#292929" stroke-width="1"/>
+
+        <!-- ── Orbit image circles — clipped to circle shape ── -->
+
+        <!-- Outer arc (r=500), θ=62° → (955, 118)  top-right r=22 -->
+        <image class="join-orbit__orb" href="Assets/images/join-us-orbit-images/Extra.png"
+               x="933" y="96" width="44" height="44"
+               clip-path="url(#orb-clip1)" preserveAspectRatio="xMidYMid slice"/>
+
+        <!-- Outer arc (r=500), θ=143° → (321, 259)  left large r=40 -->
+        <image class="join-orbit__orb" href="Assets/images/join-us-orbit-images/image-31.png"
+               x="281" y="219" width="80" height="80"
+               clip-path="url(#orb-clip2)" preserveAspectRatio="xMidYMid slice"/>
+
+        <!-- Outer arc (r=500), θ=14° → (1205, 439)  right large r=40 -->
+        <image class="join-orbit__orb" href="Assets/images/join-us-orbit-images/image-33.png"
+               x="1165" y="399" width="80" height="80"
+               clip-path="url(#orb-clip3)" preserveAspectRatio="xMidYMid slice"/>
+
+        <!-- Inner arc (r=380), θ=150° → (391, 370)  left-lower small r=18 -->
+        <image class="join-orbit__orb" href="Assets/images/join-us-orbit-images/AdobeStock_535425457-1.png"
+               x="373" y="352" width="36" height="36"
+               clip-path="url(#orb-clip4)" preserveAspectRatio="xMidYMid slice"/>
+
+      </svg>
+
+      <!-- Text content overlaid inside the dome -->
+      <div class="join-orbit__content reveal">
+        <h2 class="t-h2 join-orbit__heading"><em>Join Us</em></h2>
+        <p class="t-body-l join-orbit__body">
+          We are building a team that solves real problems and delivers measurable impact.
+          Join us to be a part of the exciting new future we are building for our customers,
+          colleagues, and communities.
+        </p>
+        <a href="#" class="btn btn--secondary t-btn join-orbit__btn">
+          Explore opportunities <span class="btn-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       CONNECT CTA
+  ══════════════════════════════════════ -->
+  <section id="connect" class="connect" aria-labelledby="connect-heading">
+    <div class="section__inner">
+
+      <div class="connect__img reveal" role="img" aria-label="Connect with Feuji">
+        <img src="Assets/images/3-AdobeStock_1715180662.png" alt="Connect with Feuji" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;border-radius:12px;" />
+      </div>
+
+      <div class="connect__content reveal reveal-d1">
+        <span class="t-label-m eyebrow" style="margin-bottom: 28px; display: block;">Get in touch</span>
+        <h2 id="connect-heading" class="connect__heading t-h2 reveal">
+          Ready for Applied<br><em>AI Engineering?</em>
+        </h2>
+        <a href="mailto:hello@feuji.com" class="btn btn--secondary t-btn">
+          Let's connect <span class="btn-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER — part of page content (z-index 1)
+  ══════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__inner">
+
+      <div class="footer__top">
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Applied AI
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#ai-engineering" class="footer__link">Feuji AI Labs</a></li>
+              <li><a href="#ai-engineering" class="footer__link">AI &amp; ML Solutions</a></li>
+              <li><a href="#ai-engineering" class="footer__link">AI Innovation Suite</a></li>
+              <li><a href="#ai-engineering" class="footer__link">AI Partnership Ecosystem</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Services
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#services" class="footer__link">Consulting</a></li>
+              <li><a href="#services" class="footer__link">Cloud Solutions</a></li>
+              <li><a href="#services" class="footer__link">Digital Engineering</a></li>
+              <li><a href="#services" class="footer__link">Data and Insights</a></li>
+              <li><a href="#services" class="footer__link">Cybersecurity</a></li>
+              <li><a href="#services" class="footer__link">Managed Services</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Industries
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Healthcare</a></li>
+              <li><a href="#" class="footer__link">Insurance</a></li>
+              <li><a href="#" class="footer__link">Pharma</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Community
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#community" class="footer__link">Smart Village</a></li>
+              <li><a href="#community" class="footer__link">Education &amp; Training</a></li>
+              <li><a href="#community" class="footer__link">Sustainability</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Insights
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#" class="footer__link">Our perspectives</a></li>
+              <li><a href="#" class="footer__link">Research and Whitepapers</a></li>
+              <li><a href="#case-studies" class="footer__link">Case Studies and blogs</a></li>
+              <li><a href="#" class="footer__link">Events and webinars</a></li>
+              <li><a href="#" class="footer__link">Feuji Expert Connect</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__acc">
+          <button class="footer__acc-btn" aria-expanded="false">
+            Who we are
+            <svg class="footer__acc-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="footer__acc-panel">
+            <ul class="footer__links" role="list">
+              <li><a href="#about"     class="footer__link">Our Story</a></li>
+              <li><a href="#"          class="footer__link">People</a></li>
+              <li><a href="#partners"  class="footer__link">Partners</a></li>
+              <li><a href="#"          class="footer__link">Leadership</a></li>
+              <li><a href="#careers"   class="footer__link">Careers</a></li>
+              <li><a href="#"          class="footer__link">Locations</a></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       AI CHATBOT — fixed bottom-right
+  ══════════════════════════════════════ -->
+  <div class="chatbot" id="chatbot" aria-label="Feuji AI assistant">
+
+    <!-- Expanded window -->
+    <div class="chatbot__window" role="dialog" aria-labelledby="chatbot-title" aria-hidden="true">
+
+      <div class="chatbot__header">
+        <div class="chatbot__header-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            <path d="M8 12h8M12 8v8" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="chatbot__header-info">
+          <p class="chatbot__header-title" id="chatbot-title">Feuji AI</p>
+          <p class="chatbot__header-status">Online</p>
+        </div>
+        <button class="chatbot__close" id="chatbotClose" aria-label="Close chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="chatbot__messages" id="chatbotMessages">
+
+        <div class="chatbot__bubble">
+          Hi there — I'm Feuji AI. How can I help you today?
+        </div>
+
+        <div class="chatbot__suggestions" aria-label="Suggested questions">
+          <button class="chatbot__suggestion" data-msg="Tell me about your services">Tell me about your services</button>
+          <button class="chatbot__suggestion" data-msg="How does the GCC model work?">How does the GCC model work?</button>
+          <button class="chatbot__suggestion" data-msg="I'd like to connect with your team">I'd like to connect with your team</button>
+        </div>
+
+      </div>
+
+      <div class="chatbot__input-row">
+        <input class="chatbot__input" id="chatbotInput" type="text" placeholder="Ask me anything…" autocomplete="off" aria-label="Chat message" />
+        <button class="chatbot__send" id="chatbotSend" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Toggle button -->
+    <button class="chatbot__toggle" id="chatbotToggle" aria-label="Open Feuji AI chat" aria-expanded="false">
+      <div class="chatbot__toggle-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+      </div>
+      <span class="chatbot__toggle-label">Ask Feuji AI</span>
+    </button>
+
+  </div>
+
+  </div><!-- /page-content -->
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER REVEAL — image only, sticky behind
+  ══════════════════════════════════════ -->
+  <div class="footer-reveal">
+    <img class="footer-reveal__img"
+         src="Assets/images/Firefly_Gemini-Flash-mountain.png"
+         alt=""
+         aria-hidden="true" />
+
+    <div class="footer-reveal__legal">
+      <p class="footer-reveal__copyright">© 2025 Feuji. All rights reserved.</p>
+      <div class="footer-reveal__policy">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div><!-- /footer-reveal -->
+
+
+  <!-- ══════════════════════════════════════
+       JAVASCRIPT — Interactivity
+  ══════════════════════════════════════ -->
+  <script>
+    'use strict';
+
+    /* ── PARALLAX — hero headline drifts up at ~0.3× scroll rate ── */
+    const heroHeadline = document.querySelector('.hero__headline');
+    function applyParallax() {
+      if (!heroHeadline) return;
+      const scrollY = window.scrollY;
+      // Drift upward at 0.28× scroll speed — subtle, not nauseating
+      heroHeadline.style.setProperty('--parallax-y', (scrollY * -0.28).toFixed(2));
+    }
+    window.addEventListener('scroll', applyParallax, { passive: true });
+
+
+    /* ── NAV: scroll-aware dark/light + frosted glass ── */
+    const nav     = document.getElementById('mainNav');
+    const hero    = document.getElementById('hero');
+    const links   = document.querySelectorAll('.nav__link');
+
+    function updateNav() {
+      const heroBottom = hero.getBoundingClientRect().bottom;
+
+      if (heroBottom > nav.offsetHeight) {
+        // still over dark hero
+        nav.classList.add('nav--dark');
+        nav.classList.remove('nav--light', 'is-scrolled');
+        hero.classList.add('hero--dark-mode');
+      } else {
+        // past hero – frosted white nav
+        nav.classList.remove('nav--dark');
+        nav.classList.add('nav--light', 'is-scrolled');
+        hero.classList.remove('hero--dark-mode');
+      }
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+
+    /* ── NAV: active section highlight ── */
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        links.forEach(l => {
+          l.classList.toggle('is-active',
+            l.getAttribute('href') === '#' + id);
+        });
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+
+    sections.forEach(s => activeObserver.observe(s));
+
+
+    /* ── STAT FADE-UP + SCRAMBLE — fires once when stats grid enters view ── */
+    (function () {
+      const animStats = document.querySelectorAll('.stat--animate');
+      const grid      = document.querySelector('.numbers-flex');
+      if (!animStats.length || !grid) return;
+
+      /* Slow calm scramble: resolves characters left→right over ~1.8s */
+      function scramble(el, delay) {
+        const original = el.textContent.trim();
+        // Split into numeric prefix and any suffix (e.g. "500" + "+")
+        const m = original.match(/^(\d+)(\D*)$/);
+        if (!m) return;
+        const numStr = m[1];
+        const suffix = m[2] || '';
+        const digits = '0123456789';
+        const frameDur  = 90;   // ms per frame — slower = calmer
+        const totalFrames = 20; // ~1.8s total
+        let frame = 0;
+
+        setTimeout(() => {
+          const iv = setInterval(() => {
+            frame++;
+            const progress = frame / totalFrames;
+            // Characters resolve left→right
+            const resolved = Math.floor(progress * (numStr.length + 1));
+            let display = '';
+            for (let i = 0; i < numStr.length; i++) {
+              display += i < resolved
+                ? numStr[i]
+                : digits[Math.floor(Math.random() * digits.length)];
+            }
+            el.textContent = display + suffix;
+            if (frame >= totalFrames) {
+              clearInterval(iv);
+              el.textContent = original; // lock to real value
+            }
+          }, frameDur);
+        }, delay);
+      }
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          animStats.forEach((stat, i) => {
+            stat.classList.add('is-visible');
+            const val = stat.querySelector('.stat__val');
+            if (val) scramble(val, i * 200); // stagger each number by 200ms
+          });
+          observer.disconnect();
+        });
+      }, { threshold: 0.5, rootMargin: '0px 0px -80px 0px' });
+
+      observer.observe(grid);
+    })();
+
+
+    /* ── SMOOTH SCROLL for anchor links ── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', e => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        const offset = nav.offsetHeight;
+        const top    = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+
+
+    /* ── SCROLL REVEAL ── */
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    /* ── Join Orbit: fully scroll-scrubbed (glow + arcs + orbs) ── */
+    (function () {
+      const section = document.querySelector('.join-orbit');
+      if (!section) return;
+
+      const glow = section.querySelector('.join-orbit__glow');
+      const arcs = section.querySelectorAll('.join-orbit__arc');  // [0]=inner, [1]=outer
+      const orbs = section.querySelectorAll('.join-orbit__orb');
+
+      // Map a value from one range to another, clamped 0–1
+      function remap(val, inLo, inHi) {
+        return Math.max(0, Math.min(1, (val - inLo) / (inHi - inLo)));
+      }
+
+      function update() {
+        const rect   = section.getBoundingClientRect();
+        const vh     = window.innerHeight;
+
+        // progress: 0 = section centre at viewport bottom, 1 = section centre at viewport centre
+        const sectionMid = rect.top + rect.height * 0.5;
+        const progress   = Math.max(0, Math.min(1, (vh - sectionMid) / (vh * 0.5)));
+
+        // Glow scrubs across the full range
+        if (glow) glow.style.opacity = Math.pow(progress, 0.5);
+
+        // Inner arc fades in first (progress 0 → 0.45)
+        if (arcs[0]) arcs[0].style.opacity = remap(progress, 0, 0.45);
+
+        // Outer arc fades in second (progress 0.3 → 0.8)
+        if (arcs[1]) arcs[1].style.opacity = remap(progress, 0.3, 0.8);
+
+        // Orbs fade in last, staggered (progress 0.55, 0.65, 0.75, 0.85)
+        orbs.forEach((orb, i) => {
+          orb.style.opacity = remap(progress, 0.5 + i * 0.1, 0.75 + i * 0.1);
+        });
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
+    })();
+
+
+    /* ── CASE CARDS: keyboard interaction ── */
+    document.querySelectorAll('.case-card[tabindex]').forEach(card => {
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const link = card.querySelector('a');
+          if (link) { e.preventDefault(); link.click(); }
+        }
+      });
+    });
+
+
+    /* ── NAV: keyboard accessibility ── */
+    links.forEach(link => {
+      link.addEventListener('focus', () => {
+        nav.classList.add('is-scrolled', 'nav--light');
+        nav.classList.remove('nav--dark');
+      });
+    });
+
+
+    /* ══════════════════════════════════════
+       TYPEWRITER — all headings
+       Scroll-driven for h2s.
+       Timed (page-load) for hero h1.
+       Handles: plain text, <br>, <em> italic.
+    ══════════════════════════════════════ */
+
+    // ── Step 1: Build DOM — wrap each character in a .tw-char span
+    //   Preserves <br> in place. Recurses into <em> so italic is kept.
+    function buildTypewriterDOM(el) {
+      const chars = [];
+
+      function processChildren(parent) {
+        const nodes = Array.from(parent.childNodes);
+        nodes.forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            // If the node starts with a newline it's HTML indentation — strip all
+            // leading whitespace. If it starts with a space (inline, after </em>)
+            // that space is meaningful — preserve it.
+            const raw = node.textContent;
+            const text = /^\n/.test(raw)
+              ? raw.replace(/^\s+/, '').replace(/[\n\r\t]+$/, '')  // indentation node
+              : raw.replace(/[\n\r\t]+$/, '');                     // inline node — keep leading space
+            if (!text.trim()) { parent.removeChild(node); return; }
+
+            const frag = document.createDocumentFragment();
+            for (const char of text) {
+              const span = document.createElement('span');
+              span.className = 'tw-char';
+              span.textContent = char;
+              frag.appendChild(span);
+              chars.push(span);
+            }
+            parent.replaceChild(frag, node);
+          } else if (node.nodeName === 'BR') {
+            // Leave <br> untouched
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            processChildren(node); // recurse into <em> etc.
+          }
+        });
+      }
+
+      processChildren(el);
+      el.classList.add('typewriter-heading');
+      return chars;
+    }
+
+    // ── Step 2a: Scroll-driven typewriter for h2 headings
+    function setupScrollTypewriter(el) {
+      const chars = buildTypewriterDOM(el);
+      const total = chars.length;
+
+      // Make container visible when heading enters viewport
+      const visObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { el.classList.add('is-visible'); visObs.unobserve(el); }
+        });
+      }, { threshold: 0.05 });
+      visObs.observe(el);
+
+      function onScroll() {
+        const rect = el.getBoundingClientRect();
+        const vh   = window.innerHeight;
+        // typing zone: heading enters bottom → reaches 38% from top
+        const raw  = (vh - rect.top) / (vh * 0.62);
+        const prog = Math.max(0, Math.min(1, raw));
+        const show = Math.round(prog * total);
+
+        chars.forEach((s, i) => s.classList.toggle('is-visible', i < show));
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
+    // ── Step 2b: Timed typewriter for the hero h1 (already on screen at load)
+    function setupHeroTypewriter(el) {
+      const chars = buildTypewriterDOM(el);
+      const total = chars.length;
+
+      el.classList.add('is-visible'); // container always visible
+      let i = 0;
+      const tick = setInterval(() => {
+        if (i < total) {
+          chars[i].classList.add('is-visible');
+          i++;
+        } else {
+          clearInterval(tick);
+        }
+      }, 80); // 80ms per character — slow, deliberate pace
+    }
+
+    // ── Apply to all h2s (scroll-driven)
+    document.querySelectorAll('.t-h2').forEach(el => setupScrollTypewriter(el));
+
+    // ── Apply to hero h1 (timed, starts 600ms after page load settles)
+    setTimeout(() => setupHeroTypewriter(document.querySelector('.hero__headline')), 600);
+
+    /* ─────────────────────────────────────────
+       AI TABS — auto-advancing with progress bar
+    ───────────────────────────────────────── */
+    (function () {
+      const DURATION = 4000;
+      const tabs        = document.querySelectorAll('.ai-tab');
+      const images      = document.querySelectorAll('.ai-tab-img');
+      const dots        = document.querySelectorAll('.ai-dot');
+      const mobileFill  = document.querySelector('.ai-mobile-progress__fill');
+      let current = 0;
+      let timer   = null;
+
+      function activate(idx) {
+        tabs.forEach(t => {
+          t.classList.remove('is-active');
+          void t.offsetWidth; // force reflow — resets CSS animation
+        });
+        images.forEach(img => img.classList.remove('is-active'));
+        tabs[idx].classList.add('is-active');
+        images[idx].classList.add('is-active');
+        current = idx;
+
+        // Sync mobile dot indicators
+        dots.forEach((d, i) => {
+          d.classList.toggle('is-active', i === idx);
+          d.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+        });
+
+        // Reset & restart mobile progress bar
+        if (mobileFill) {
+          mobileFill.classList.remove('is-running');
+          void mobileFill.offsetWidth; // force reflow to restart animation
+          mobileFill.classList.add('is-running');
+        }
+      }
+
+      function advance() { activate((current + 1) % tabs.length); }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(advance, DURATION);
+      }
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => { activate(i); startTimer(); });
+      });
+
+      // Dot buttons also trigger activation
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => { activate(i); startTimer(); });
+      });
+
+      // ── Touch swipe on the ai-tabs block (mobile) ──
+      const aiTabs = document.querySelector('.ai-tabs');
+      if (aiTabs) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        aiTabs.addEventListener('touchstart', e => {
+          touchStartX = e.changedTouches[0].clientX;
+          touchStartY = e.changedTouches[0].clientY;
+        }, { passive: true });
+        aiTabs.addEventListener('touchend', e => {
+          const dx = e.changedTouches[0].clientX - touchStartX;
+          const dy = e.changedTouches[0].clientY - touchStartY;
+          // Only act if horizontal swipe is dominant (avoids scroll conflicts)
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+            if (dx < 0) activate((current + 1) % tabs.length);   // swipe left → next
+            else        activate((current - 1 + tabs.length) % tabs.length); // swipe right → prev
+            startTimer();
+          }
+        }, { passive: true });
+      }
+
+      // Pause auto-advance while user hovers the component
+      const component = document.querySelector('.ai-tabs');
+      if (component) {
+        component.addEventListener('mouseenter', () => clearInterval(timer));
+        component.addEventListener('mouseleave', () => startTimer());
+      }
+
+      // Reset to tab 0 every time the section scrolls into view
+      const aiSection = document.querySelector('#ai-engineering');
+      if (aiSection) {
+        const resetObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              activate(0);
+              startTimer();
+            } else {
+              clearInterval(timer);
+            }
+          });
+        }, { threshold: 0.2 });
+        resetObserver.observe(aiSection);
+      }
+
+      activate(0);
+      startTimer();
+    })();
+
+    /* ─────────────────────────────────────────
+       COMMUNITY — sticky scroll card reveal
+       Pixel-based thresholds ≈ one scroll tick
+       per card. Fully bidirectional — cards
+       disappear one-by-one on scroll back up.
+    ───────────────────────────────────────── */
+    (function () {
+      const wrapper = document.querySelector('.comm-scroll-wrapper');
+      const cards   = document.querySelectorAll('.comm-card');
+      if (!wrapper || !cards.length) return;
+
+      // px scrolled into the sticky zone that triggers each card
+      // ~160px ≈ one mouse wheel tick — adjust if needed
+      const STEP = 160;
+      const thresholds = [20, 20 + STEP, 20 + STEP * 2];
+
+      function update() {
+        const scrolled = -wrapper.getBoundingClientRect().top;
+
+        cards.forEach((card, i) => {
+          if (scrolled >= thresholds[i]) {
+            card.classList.add('is-revealed');
+          } else {
+            card.classList.remove('is-revealed'); // reverse on scroll up
+          }
+        });
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+
+    /* ── Footer accordion (mobile only) ── */
+    document.querySelectorAll('.footer__acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const acc = btn.closest('.footer__acc');
+        const isOpen = acc.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+
+
+    /* ─────────────────────────────────────────
+       CASE STUDIES CAROUSEL
+    ───────────────────────────────────────── */
+    (function () {
+      const track   = document.getElementById('caseSlidesTrack');
+      const dots    = document.querySelectorAll('.case-carousel__dot');
+      const counter = document.getElementById('caseCounter');
+      const prevBtn = document.getElementById('casePrev');
+      const nextBtn = document.getElementById('caseNext');
+      if (!track) return;
+
+      const total = dots.length;
+      let current = 0;
+      let timer   = null;
+
+      function goTo(idx) {
+        current = (idx + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => {
+          d.classList.toggle('is-active', i === current);
+          d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+        if (counter) counter.textContent = `${current + 1} / ${total}`;
+      }
+
+      function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo(current + 1), 6000);
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => { goTo(current - 1); startAuto(); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { goTo(current + 1); startAuto(); });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => { goTo(i); startAuto(); });
+      });
+
+      // Pause on hover
+      const section = document.querySelector('.case-carousel');
+      if (section) {
+        section.addEventListener('mouseenter', () => clearInterval(timer));
+        section.addEventListener('mouseleave', startAuto);
+      }
+
+      goTo(0);
+      startAuto();
+    })();
+
+
+    /* ─────────────────────────────────────────
+       AI CHATBOT
+    ───────────────────────────────────────── */
+    (function () {
+      const chatbot  = document.getElementById('chatbot');
+      const toggle   = document.getElementById('chatbotToggle');
+      const closeBtn = document.getElementById('chatbotClose');
+      const input    = document.getElementById('chatbotInput');
+      const sendBtn  = document.getElementById('chatbotSend');
+      const messages = document.getElementById('chatbotMessages');
+      const win      = chatbot.querySelector('.chatbot__window');
+      if (!chatbot) return;
+
+      // Canned responses
+      const responses = {
+        'tell me about your services': 'We offer Consulting, Cloud Solutions, Digital Engineering, Data & Insights, Cybersecurity, and Managed Services — all underpinned by applied AI engineering.',
+        'how does the gcc model work?': 'Our GCC (Global Capability Centre) model gives you a dedicated, governed engineering team embedded in your organisation — combining the talent depth of offshore delivery with enterprise-grade governance.',
+        "i'd like to connect with your team": 'Great — you can reach us at hello@feuji.com or use the "Let\'s connect" button in the navigation. We\'ll get back to you within one business day.',
+      };
+
+      function openChat() {
+        chatbot.classList.add('is-open');
+        win.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+        setTimeout(() => input.focus(), 350);
+      }
+
+      function closeChat() {
+        chatbot.classList.remove('is-open');
+        win.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function addBubble(text, isUser = false) {
+        const div = document.createElement('div');
+        div.className = 'chatbot__bubble' + (isUser ? ' chatbot__bubble--user' : '');
+        div.textContent = text;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+        return div;
+      }
+
+      function typingIndicator() {
+        const div = document.createElement('div');
+        div.className = 'chatbot__bubble';
+        div.innerHTML = '<span style="opacity:0.5;letter-spacing:2px;">···</span>';
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+        return div;
+      }
+
+      function handleMessage(text) {
+        if (!text.trim()) return;
+        addBubble(text, true);
+        const typing = typingIndicator();
+        const key = text.toLowerCase().replace(/[?!]/g, '');
+        const reply = responses[key] || 'Thanks for your message. Our team will be in touch shortly — or email us directly at hello@feuji.com.';
+        setTimeout(() => {
+          messages.removeChild(typing);
+          addBubble(reply);
+        }, 900);
+      }
+
+      toggle.addEventListener('click', openChat);
+      closeBtn.addEventListener('click', closeChat);
+
+      sendBtn.addEventListener('click', () => {
+        handleMessage(input.value);
+        input.value = '';
+      });
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { handleMessage(input.value); input.value = ''; }
+      });
+
+      // Suggestion chips
+      document.querySelectorAll('.chatbot__suggestion').forEach(btn => {
+        btn.addEventListener('click', () => {
+          handleMessage(btn.dataset.msg);
+          btn.closest('.chatbot__suggestions').remove();
+        });
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && chatbot.classList.contains('is-open')) closeChat();
+      });
+    })();
+
+  </script>
+
+  <!-- ── Mobile nav toggle ── -->
+  <script>
+  (function () {
+    const btn     = document.querySelector('.nav__hamburger');
+    const drawer  = document.getElementById('mobileNav');
+    const links   = drawer.querySelectorAll('.mobile-nav__link, .mobile-nav__cta');
+
+    function toggleMenu(open) {
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open);
+      drawer.classList.toggle('is-open', open);
+      drawer.setAttribute('aria-hidden', !open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    btn.addEventListener('click', () => {
+      toggleMenu(!btn.classList.contains('is-open'));
+    });
+
+    links.forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+  })();
+  </script>
+
+</body>
+</html>
