@@ -709,9 +709,10 @@
     }
 
     .featured__arrow:hover {
-      background: var(--orange);
-      border-color: var(--orange);
+      background: var(--white);
+      border-color: var(--white);
       transform: scale(1.05);
+      color: var(--ink);
     }
 
     .featured__arrow svg {
@@ -738,7 +739,7 @@
 
     .featured__dot.is-active {
       width: 28px;
-      background: var(--orange);
+      background: var(--white);
     }
 
     .featured__inner {
@@ -761,9 +762,13 @@
       /* Muted down over the dark background */
       z-index: 3;
       /*background: var(--ink);*/
-
+      /*border: 1px solid var(--border);*/
+      /*border: 1px solid var(--border);*/
+      background-color: var(--orange);
       border-radius: 999px;
-      padding: 6px 14px;
+      padding: 4px 10px;
+
+
     }
 
     .featured-card {
@@ -826,7 +831,7 @@
     }
 
     .featured-card__tag {
-      color: var(--orange);
+      color: var(--neutral-500);
       font-weight: 600;
       letter-spacing: 1px;
     }
@@ -1667,14 +1672,13 @@
             <article class="featured-card reveal reveal-d1" tabindex="0">
               <div class="featured-card__content">
                 <div>
-                  <span class="featured-card__badge t-label-s">Blog</span>
-                  <br>
+
                   <span class="featured-card__tag t-label-s">Applied AI</span>
                 </div>
                 <h2 class="featured-card__title">Enterprise Knowledge Graphs: The Missing Link in RAG</h2>
-                <p class="featured-card__excerpt t-body-m">Why vector databases alone are insufficient for complex
+                <!--<p class="featured-card__excerpt t-body-m">Why vector databases alone are insufficient for complex
                   enterprise query logic, and how knowledge graphs restore semantic context, accuracy, and structural
-                  truth.</p>
+                  truth.</p>-->
                 <div
                   style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
                   <span class="featured-card__meta t-body-s">April 2026 • 6 min read</span>
@@ -1692,13 +1696,13 @@
             <article class="featured-card reveal reveal-d1" tabindex="0">
               <div class="featured-card__content">
                 <div>
-                  <span class="featured-card__badge t-label-s">Blog</span>
-                  <br>
+                  <!--<span class="featured-card__badge t-label-s">Blog</span>
+                  <br>-->
                   <span class="featured-card__tag t-label-s">Applied AI</span>
                 </div>
                 <h2 class="featured-card__title">AI-Native Quality: Re-engineering Pipelines for LLMs</h2>
-                <p class="featured-card__excerpt t-body-m">How deterministic quality testing frameworks must evolve to
-                  evaluate and validate the inherently probabilistic outputs of large language models.</p>
+                <!--<p class="featured-card__excerpt t-body-m">How deterministic quality testing frameworks must evolve to
+                  evaluate and validate the inherently probabilistic outputs of large language models.</p>-->
                 <div
                   style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
                   <span class="featured-card__meta t-body-s">March 2026 • 5 min read</span>
