@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Insights</title>
+  <title>Insights - Blogs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -640,18 +640,33 @@
        FEATURED ARTICLE
     ───────────────────────────────────────── */
     .featured {
-      padding: 80px 0;
       background: var(--white);
       position: relative;
-      /* Anchor for absolute positioning */
+      overflow: hidden;
+    }
+
+    /* ── FEATURED CAROUSEL STYLES ── */
+    .featured-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .featured-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      position: relative;
       display: flex;
       align-items: center;
       min-height: 70vh;
-      /* Ensures a grand scale layout */
+      box-sizing: border-box;
+      padding: 80px 0 100px;
+      /* Leave space at bottom for carousel controls */
     }
 
-    /* Background Image Stacked Behind */
-    .featured>img {
+    /* Background Image Stacked Behind Slide */
+    .featured-slide>img {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -660,14 +675,81 @@
       z-index: 1;
     }
 
+    /* Carousel Controls overlaying the slide background */
+    .featured__controls {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(18, 18, 24, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 8px 18px;
+    }
+
+    .featured__arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: none;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.22s var(--ease), border-color 0.22s var(--ease), transform 0.22s var(--ease);
+      padding: 0;
+    }
+
+    .featured__arrow:hover {
+      background: var(--orange);
+      border-color: var(--orange);
+      transform: scale(1.05);
+    }
+
+    .featured__arrow svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .featured__dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .featured__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: width 0.35s var(--ease), background 0.25s var(--ease);
+    }
+
+    .featured__dot.is-active {
+      width: 28px;
+      background: var(--orange);
+    }
+
     .featured__inner {
       position: relative;
       z-index: 3;
       /* Placed above the image and gradient background layer */
       width: 100%;
       max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 var(--pad-x);
+      margin: 0 6%;
+      padding: 0 0;
+      /*change to padding: 0 var(--pad-x) for original layout*/
     }
 
     .featured__label {
@@ -733,7 +815,7 @@
       color: var(--white);
       border-radius: 999px;
       padding: 6px 14px;
-      z-index: 2;
+
     }
 
     .featured-card__content {
@@ -774,6 +856,11 @@
       padding: 40px 0 20px;
       background: var(--white);
       border-top: 1px solid var(--border);
+      position: relative;
+      /* Establishes a new stacking context */
+      z-index: 10;
+
+
     }
 
     .filter-section__inner {
@@ -814,6 +901,83 @@
       border-color: var(--ink);
       color: var(--white);
       pointer-events: none;
+    }
+
+    /* ── FILTER DROPDOWN SYSTEM ── */
+    .filter-dropdown {
+      position: relative;
+      display: inline-block;
+
+    }
+
+    .filter-dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .dropdown-chevron {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.25s var(--ease);
+      stroke: currentColor;
+    }
+
+    .filter-dropdown.is-open .dropdown-chevron {
+      transform: rotate(180deg);
+    }
+
+    .filter-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px;
+      min-width: 240px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-dropdown.is-open .filter-dropdown-menu {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .filter-dropdown-item {
+      padding: 10px 16px;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      font-family: var(--f-ui);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--neutral-700);
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease);
+      width: 100%;
+    }
+
+    .filter-dropdown-item:hover {
+      background: var(--neutral-50);
+      color: var(--orange);
+    }
+
+    .filter-dropdown-item.is-selected {
+      background: var(--orange-light) !important;
+      color: var(--orange) !important;
+      font-weight: 600;
     }
 
     /* ─────────────────────────────────────────
@@ -920,7 +1084,7 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       padding: 4px 10px;
-      z-index: 2;
+      z-index: 1;
     }
 
     .insight-card__media::after {
@@ -1021,7 +1185,7 @@
        NEWSLETTER CTA SECTION
     ───────────────────────────────────────── */
     .newsletter {
-      background: var(--neutral-50);
+      background: var(--ink);
       border-top: 1px solid var(--border);
     }
 
@@ -1042,7 +1206,7 @@
       font-weight: 500;
       line-height: 1.1;
       letter-spacing: -2px;
-      color: var(--ink);
+      color: var(--neutral-50);
     }
 
     .newsletter__heading em {
@@ -1051,7 +1215,7 @@
     }
 
     .newsletter__sub {
-      color: var(--mid);
+      color: var(--neutral-100);
       max-width: 500px;
       font-size: 16px;
       line-height: 24px;
@@ -1399,22 +1563,21 @@
     <nav class="nav nav--light" id="mainNav" aria-label="Primary navigation">
       <div class="nav__inner">
 
-        <a href="Feuji_Home_v003.html" class="nav__logo">
+        <a href="index.html" class="nav__logo">
           <img src="Assets/images/feuji-orange-logo.png" alt="Feuji" class="nav__logo-img" />
         </a>
 
         <ul class="nav__links" role="list">
-          <li><a href="Feuji_Home_v003.html#ai-engineering" class="nav__link t-nav">Applied AI</a></li>
-          <li><a href="Feuji_Home_v003.html#services" class="nav__link t-nav">Services</a></li>
-          <li><a href="Feuji_Home_v003.html#industries" class="nav__link t-nav">Industries</a></li>
-          <li><a href="Feuji_Home_v003.html#community" class="nav__link t-nav">Community</a></li>
+          <li><a href="index.html#ai-engineering" class="nav__link t-nav">Applied AI</a></li>
+          <li><a href="index.html#services" class="nav__link t-nav">Services</a></li>
+          <li><a href="index.html#industries" class="nav__link t-nav">Industries</a></li>
+          <li><a href="index.html#community" class="nav__link t-nav">Community</a></li>
           <li><a href="Insights.html" class="nav__link t-nav is-active">Insights</a></li>
-          <li><a href="Feuji_Home_v003.html#about" class="nav__link t-nav">Who we are</a></li>
+          <li><a href="index.html#about" class="nav__link t-nav">Who we are</a></li>
         </ul>
 
         <div class="nav__cta-wrap">
-          <a href="Feuji_Home.html#connect" class="btn btn--primary-orange t-btn">Let's connect <span
-              class="btn-arrow">→</span></a>
+          <a href="#newsletter" class="btn btn--primary-orange t-btn">Let's connect <span class="btn-arrow">→</span></a>
         </div>
 
         <!-- Mobile hamburger -->
@@ -1450,7 +1613,7 @@
 
         <!-- Heading with typewriter character loader -->
         <h1 class="page-banner__heading t-display-m typewriter-heading" id="banner-heading">
-          <em>Insights</em>
+          <em>Blogs</em>
         </h1>
 
         <!-- Subheading -->
@@ -1464,37 +1627,110 @@
     </section>
 
     <!-- ══════════════════════════════════════
-         FEATURED INSIGHT
+         FEATURED BLOG
     ══════════════════════════════════════ -->
     <section class="featured" aria-labelledby="featured-heading">
 
-      <img src="Assets/images/home-ai-engineering/AI-partnership.png" alt="Featured Article Graphic" loading="eager" />
-      <span class="t-label-m featured__label reveal">Featured Perspective</span>
+      <span class="t-label-m featured__label reveal">Featured Blogs</span>
 
-      <div class="featured__inner">
-        <article class="featured-card reveal reveal-d1" tabindex="0">
-          <div class="featured-card__content">
+      <!-- Carousel Track -->
+      <div class="featured-track" id="featuredTrack">
 
-            <div>
-              <span class="featured-card__badge t-label-s">Whitepaper</span>
-              <br>
-              <span class="featured-card__tag t-label-s">Applied AI</span>
-            </div>
+        <!-- Slide 1 (Original) -->
+        <div class="featured-slide">
+          <img src="Assets/images/home-ai engineering/AI partnership.png" alt="The GenAI Dilemma" loading="eager" />
+          <div class="featured__inner">
+            <article class="featured-card reveal reveal-d1" tabindex="0">
+              <div class="featured-card__content">
+                <div>
 
-            <h2 id="featured-heading" class="featured-card__title">The GenAI Dilemma: Moving from Prototyping to
-              Production SLA</h2>
-            <p class="featured-card__excerpt t-body-m">A deep dive into the operational realities, infrastructure costs,
-              and latency mitigation strategies required to scale large language models from sandbox proofs-of-concept
-              to mission-critical enterprise production SLAs.</p>
-            <div
-              style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
-              <span class="featured-card__meta t-body-s">May 2026 • 12 min read</span>
-              <a href="#" class="btn btn--primary t-btn">Read Whitepaper <span class="btn-arrow">→</span></a>
-            </div>
+                  <span class="featured-card__tag t-label-s">Applied AI</span>
+                </div>
+                <h2 id="featured-heading" class="featured-card__title">The GenAI Dilemma: Moving from Prototyping to
+                  Production SLA</h2>
+
+                <div
+                  style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
+                  <span class="featured-card__meta t-body-s">May 2026 • 12 min read</span>
+                  <a href="#" class="btn btn--primary t-btn">Read Whitepaper <span class="btn-arrow">→</span></a>
+                </div>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
+
+        <!-- Slide 2 (RAG & Knowledge Graphs) -->
+        <div class="featured-slide">
+          <img src="Assets/images/home-ai engineering/Feuji AI Labs.png" alt="Enterprise Knowledge Graphs"
+            loading="lazy" />
+          <div class="featured__inner">
+            <article class="featured-card reveal reveal-d1" tabindex="0">
+              <div class="featured-card__content">
+                <div>
+                  <span class="featured-card__badge t-label-s">Blog</span>
+                  <br>
+                  <span class="featured-card__tag t-label-s">Applied AI</span>
+                </div>
+                <h2 class="featured-card__title">Enterprise Knowledge Graphs: The Missing Link in RAG</h2>
+                <p class="featured-card__excerpt t-body-m">Why vector databases alone are insufficient for complex
+                  enterprise query logic, and how knowledge graphs restore semantic context, accuracy, and structural
+                  truth.</p>
+                <div
+                  style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
+                  <span class="featured-card__meta t-body-s">April 2026 • 6 min read</span>
+                  <a href="#" class="btn btn--primary t-btn">Read Research <span class="btn-arrow">→</span></a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Slide 3 (AI-Native Quality) -->
+        <div class="featured-slide">
+          <img src="Assets/images/home-ai engineering/AI innovation.png" alt="AI-Native Quality" loading="lazy" />
+          <div class="featured__inner">
+            <article class="featured-card reveal reveal-d1" tabindex="0">
+              <div class="featured-card__content">
+                <div>
+                  <span class="featured-card__badge t-label-s">Blog</span>
+                  <br>
+                  <span class="featured-card__tag t-label-s">Applied AI</span>
+                </div>
+                <h2 class="featured-card__title">AI-Native Quality: Re-engineering Pipelines for LLMs</h2>
+                <p class="featured-card__excerpt t-body-m">How deterministic quality testing frameworks must evolve to
+                  evaluate and validate the inherently probabilistic outputs of large language models.</p>
+                <div
+                  style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 12px;">
+                  <span class="featured-card__meta t-body-s">March 2026 • 5 min read</span>
+                  <a href="#" class="btn btn--primary t-btn">Read Guide <span class="btn-arrow">→</span></a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
 
       </div>
+
+      <!-- Carousel Navigation Controls -->
+      <div class="featured__controls">
+        <button class="featured__arrow" id="featuredPrev" aria-label="Previous featured article">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="featured__dots" role="tablist" aria-label="Featured article navigation">
+          <button class="featured__dot is-active" data-slide="0" aria-label="Featured article 1"
+            aria-selected="true"></button>
+          <button class="featured__dot" data-slide="1" aria-label="Featured article 2" aria-selected="false"></button>
+          <button class="featured__dot" data-slide="2" aria-label="Featured article 3" aria-selected="false"></button>
+        </div>
+        <button class="featured__arrow" id="featuredNext" aria-label="Next featured article">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
     </section>
 
     <!-- ══════════════════════════════════════
@@ -1503,19 +1739,40 @@
     <section class="filter-section">
       <div class="filter-section__inner reveal">
         <nav class="filter-bar" aria-label="Filter insights by category">
-          <button class="filter-btn is-active" data-filter="all">All Insights</button>
-          <button class="filter-btn" data-filter="services">Services</button>
+          <button class="filter-btn is-active" data-filter="all">All Blogs</button>
+          <div class="filter-dropdown" id="servicesDropdown">
+            <button class="filter-btn filter-dropdown-toggle" data-filter="services" aria-haspopup="true"
+              aria-expanded="false">
+              <span>Services</span>
+              <svg class="dropdown-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="filter-dropdown-menu" role="menu" aria-label="Services submenu">
+              <button class="filter-dropdown-item" role="menuitem" data-service="consulting"
+                data-filter="services-consulting">Consulting</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="cloud-solutions"
+                data-filter="services-cloud-solutions">Cloud Solutions</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="digital-engineering"
+                data-filter="services-digital-engineering">Digital Engineering</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="data-insights"
+                data-filter="services-data-insights">Data and Insights</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="cybersecurity"
+                data-filter="services-cybersecurity">Cybersecurity</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="managed-services"
+                data-filter="services-managed-services">Managed Services</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="ai-automation"
+                data-filter="services-ai-automation">AI & Automation</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="quality-engineering"
+                data-filter="services-quality-engineering">Quality Engineering</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="gcc" data-filter="services-gcc">Global
+                Capability Centre</button>
+              <button class="filter-dropdown-item" role="menuitem" data-service="talent-workforce"
+                data-filter="services-talent-workforce">Talent & Workforce</button>
+            </div>
+          </div>
           <button class="filter-btn" data-filter="casestudies">Case Studies</button>
           <button class="filter-btn" data-filter="whitepapers">Whitepapers</button>
-          <!-- 
-          <div class="filter-dropdown-wrapper">
-            <select class="filter-btn filter-select" id="gccDropdown" aria-label="Filter by GCC Region">
-              <option value="gcc" selected>Whitepapers</option>
-              <option value="gcc-india">Blogs</option>
-              <option value="gcc-americas">Feuji Expert Connect</option>
-            </select>
-          </div>
-          -->
           <button class="filter-btn" data-filter="blogs">Blogs</button>
           <button class="filter-btn" data-filter="expconnect">Feuji Expert Connect</button>
         </nav>
@@ -1523,7 +1780,7 @@
     </section>
 
     <!-- ══════════════════════════════════════
-         MAIN INSIGHTS GRID
+         MAIN BLOGS GRID
     ══════════════════════════════════════ -->
     <section class="insights" aria-label="Insights article feed">
       <div class="insights__inner">
@@ -1531,10 +1788,11 @@
         <div class="insights__grid">
 
           <!-- Card 1 (Applied AI) -->
-          <div class="insight-cell reveal" data-category="applied-ai">
+          <div class="insight-cell reveal" data-category="applied-ai"
+            data-services="ai-automation,data-insights,applied-ai">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Research</span>
+                <span class="insight-card__tag">Cloud Solutions</span>
                 <img src="Assets/images/home-services-v002/Cloud-Solutions.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1550,10 +1808,11 @@
           </div>
 
           <!-- Card 2 (GCC) -->
-          <div class="insight-cell reveal reveal-d1" data-category="gcc">
+          <div class="insight-cell reveal reveal-d1" data-category="gcc"
+            data-services="consulting,gcc,managed-services">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Whitepaper</span>
+                <span class="insight-card__tag">Digital Engineering</span>
                 <img src="Assets/images/home-services-v002/Consulting.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1569,10 +1828,11 @@
           </div>
 
           <!-- Card 3 (Quality Engineering) -->
-          <div class="insight-cell reveal reveal-d2" data-category="quality-engineering">
+          <div class="insight-cell reveal reveal-d2" data-category="quality-engineering"
+            data-services="quality-engineering,ai-automation,digital-engineering">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Guide</span>
+                <span class="insight-card__tag">Data and Insights</span>
                 <img src="Assets/images/home-services-v002/Digital-Engineering.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1588,10 +1848,11 @@
           </div>
 
           <!-- Card 4 (Sustainability) -->
-          <div class="insight-cell reveal" data-category="sustainability">
+          <div class="insight-cell reveal" data-category="sustainability"
+            data-services="sustainability,cloud-solutions,digital-engineering">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Case Study</span>
+                <span class="insight-card__tag">Cybersecurity</span>
                 <img src="Assets/images/home-services-v002/Managed-Services.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1607,10 +1868,11 @@
           </div>
 
           <!-- Card 5 (Applied AI) -->
-          <div class="insight-cell reveal reveal-d1" data-category="applied-ai">
+          <div class="insight-cell reveal reveal-d1" data-category="applied-ai"
+            data-services="cybersecurity,cloud-solutions,ai-automation">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Blog</span>
+                <span class="insight-card__tag">Managed Services</span>
                 <img src="Assets/images/home-services-v002/Cybersecurity.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1626,10 +1888,11 @@
           </div>
 
           <!-- Card 6 (GCC) -->
-          <div class="insight-cell reveal reveal-d2" data-category="gcc">
+          <div class="insight-cell reveal reveal-d2" data-category="gcc"
+            data-services="talent-workforce,gcc,consulting">
             <article class="insight-card" tabindex="0">
               <div class="insight-card__media">
-                <span class="insight-card__tag">Analysis</span>
+                <span class="insight-card__tag">AI & Automation</span>
                 <img src="Assets/images/home-services-v002/Data-and-Insights.png" alt="" loading="lazy" />
               </div>
               <div class="insight-card__body">
@@ -1658,7 +1921,7 @@
     <!-- ══════════════════════════════════════
          NEWSLETTER CTA SECTION
     ══════════════════════════════════════ -->
-    <section class="newsletter" aria-labelledby="newsletter-heading">
+    <section id="newsletter" class="newsletter" aria-labelledby="newsletter-heading">
       <div class="section__inner reveal">
         <h2 id="newsletter-heading" class="newsletter__heading">Stay ahead of the <em>curve</em></h2>
         <p class="newsletter__sub t-body-m">Get high-impact technology and AI strategies sent directly to your inbox
@@ -1945,9 +2208,56 @@
       reveals.forEach(el => observer.observe(el));
     })();
 
+    /* ── FEATURED CAROUSEL ── */
+    (function () {
+      const track = document.getElementById('featuredTrack');
+      const dots = document.querySelectorAll('.featured__dot');
+      const prevBtn = document.getElementById('featuredPrev');
+      const nextBtn = document.getElementById('featuredNext');
+      if (!track) return;
+
+      const total = dots.length;
+      let current = 0;
+      let timer = null;
+
+      function goTo(idx) {
+        current = (idx + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => {
+          d.classList.toggle('is-active', i === current);
+          d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+      }
+
+      function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo(current + 1), 6000);
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => { goTo(current - 1); startAuto(); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { goTo(current + 1); startAuto(); });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => { goTo(i); startAuto(); });
+      });
+
+      // Pause on hover
+      const section = document.querySelector('.featured');
+      if (section) {
+        section.addEventListener('mouseenter', () => clearInterval(timer));
+        section.addEventListener('mouseleave', startAuto);
+      }
+
+      goTo(0);
+      startAuto();
+    })();
+
     /* ── CATEGORY FILTERING & DYNAMIC CASCADE ── */
     (function () {
-      const filters = document.querySelectorAll('.filter-btn');
+      const filters = document.querySelectorAll('.filter-btn:not(.filter-dropdown-toggle)');
+      const toggleBtn = document.querySelector('.filter-dropdown-toggle');
+      const dropdownContainer = document.getElementById('servicesDropdown');
+      const dropdownItems = document.querySelectorAll('.filter-dropdown-item');
       const cells = document.querySelectorAll('.insight-cell');
       const grid = document.querySelector('.insights__grid');
       const empty = document.getElementById('emptyState');
@@ -1991,26 +2301,99 @@
         });
       }
 
+      // Handle custom card filtering logic
+      function runFilter(filterVal) {
+        cells.forEach(cell => {
+          const cellCategory = cell.getAttribute('data-category');
+          const cellServices = cell.getAttribute('data-services') || '';
+          const tagText = cell.querySelector('.insight-card__tag')?.textContent.toLowerCase() || '';
+
+          let matches = false;
+
+          if (filterVal === 'all') {
+            matches = true;
+          } else if (cellCategory === filterVal) {
+            matches = true;
+          } else if (filterVal.startsWith('services-')) {
+            const serviceKey = filterVal.replace('services-', '');
+            matches = cellServices.split(',').includes(serviceKey);
+          } else {
+            // Advanced matching for standard categories to guarantee 100% operation
+            if (filterVal === 'casestudies' && tagText.includes('case study')) matches = true;
+            else if (filterVal === 'whitepapers' && tagText.includes('whitepaper')) matches = true;
+            else if (filterVal === 'blogs' && tagText.includes('blog')) matches = true;
+            else if (filterVal === 'expconnect' && tagText.includes('expert connect')) matches = true;
+          }
+
+          if (matches) {
+            cell.classList.remove('is-hidden');
+          } else {
+            cell.classList.add('is-hidden');
+          }
+        });
+
+        updateCascade();
+      }
+
+      // 1. Regular category buttons
       filters.forEach(btn => {
         btn.addEventListener('click', () => {
-          // Update active button state
+          // Reset other controls
           filters.forEach(b => b.classList.remove('is-active'));
+          if (toggleBtn) {
+            toggleBtn.classList.remove('is-active');
+            toggleBtn.querySelector('span').textContent = 'Services';
+          }
+          dropdownItems.forEach(item => item.classList.remove('is-selected'));
+
           btn.classList.add('is-active');
-
           const filterVal = btn.getAttribute('data-filter');
-
-          cells.forEach(cell => {
-            const cellCategory = cell.getAttribute('data-category');
-            if (filterVal === 'all' || cellCategory === filterVal) {
-              cell.classList.remove('is-hidden');
-            } else {
-              cell.classList.add('is-hidden');
-            }
-          });
-
-          updateCascade();
+          runFilter(filterVal);
         });
       });
+
+      // 2. Dropdown open/close
+      if (toggleBtn && dropdownContainer) {
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = dropdownContainer.classList.toggle('is-open');
+          toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!dropdownContainer.contains(e.target)) {
+            dropdownContainer.classList.remove('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Dropdown item selection
+        dropdownItems.forEach(item => {
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Remove active states from other filters
+            filters.forEach(b => b.classList.remove('is-active'));
+            dropdownItems.forEach(i => i.classList.remove('is-selected'));
+
+            // Select this item
+            item.classList.add('is-selected');
+            toggleBtn.classList.add('is-active');
+
+            const serviceName = item.textContent;
+            toggleBtn.querySelector('span').textContent = `Services: ${serviceName}`;
+
+            // Close menu
+            dropdownContainer.classList.remove('is-open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+
+            // Run filtering
+            const filterVal = item.getAttribute('data-filter');
+            runFilter(filterVal);
+          });
+        });
+      }
 
       // Handle window resize dynamically to adjust cascade offsets
       let resizeTimer;
